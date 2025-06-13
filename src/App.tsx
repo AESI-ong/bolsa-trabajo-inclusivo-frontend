@@ -1,38 +1,77 @@
-import { Routes, Route, Link, BrowserRouter } from "react-router-dom";
-import "./App.css";
+import { Routes, Route, Link } from "react-router-dom";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box,
+  Container,
+} from "@mui/material";
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="p-4">
-        <nav className="space-x-4 mb-4">
-          <Link to="/" className="text-blue-600 underline">
-            Home
-          </Link>
-          <Link to="/about" className="text-blue-600 underline">
-            About
-          </Link>
-          <Link to="/jobs" className="text-blue-600 underline">
-            Jobs
-          </Link>
-        </nav>
+    <>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            Bolsa de Empleo
+          </Typography>
+          <Button color="inherit" component={Link} to="/">
+            Inicio
+          </Button>
+          <Button color="inherit" component={Link} to="/about">
+            Sobre Nosotros
+          </Button>
+          <Button color="inherit" component={Link} to="/jobs">
+            Empleos
+          </Button>
+        </Toolbar>
+      </AppBar>
 
+      <Container sx={{ mt: 4 }}>
         <Routes>
-          <Route
-            path="/"
-            element={<h1 className="text-3xl font-bold">Home Page</h1>}
-          />
-          <Route
-            path="/about"
-            element={<h1 className="text-3xl font-bold">About Us</h1>}
-          />
-          <Route
-            path="/jobs"
-            element={<h1 className="text-3xl font-bold">Job Listings</h1>}
-          />
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/jobs" element={<Jobs />} />
         </Routes>
-      </div>
-    </BrowserRouter>
+      </Container>
+    </>
+  );
+}
+
+// Vistas simples
+function Home() {
+  return (
+    <Box>
+      <Typography variant="h4" gutterBottom>
+        Inicio
+      </Typography>
+      <Typography>Bienvenido a la plataforma de empleos.</Typography>
+    </Box>
+  );
+}
+
+function About() {
+  return (
+    <Box>
+      <Typography variant="h4" gutterBottom>
+        Sobre Nosotros
+      </Typography>
+      <Typography>
+        Somos una plataforma que conecta talento con oportunidades.
+      </Typography>
+    </Box>
+  );
+}
+
+function Jobs() {
+  return (
+    <Box>
+      <Typography variant="h4" gutterBottom>
+        Empleos Disponibles
+      </Typography>
+      <Typography>Explora las últimas ofertas laborales publicadas.</Typography>
+    </Box>
   );
 }
 
