@@ -1,10 +1,38 @@
+import { Routes, Route, Link, BrowserRouter } from "react-router-dom";
 import "./App.css";
 
 function App() {
   return (
-    <h1 className="text-3xl bg-red-300 font-bold underline">
-      React 19 with Tailwind CSS v4
-    </h1>
+    <BrowserRouter>
+      <div className="p-4">
+        <nav className="space-x-4 mb-4">
+          <Link to="/" className="text-blue-600 underline">
+            Home
+          </Link>
+          <Link to="/about" className="text-blue-600 underline">
+            About
+          </Link>
+          <Link to="/jobs" className="text-blue-600 underline">
+            Jobs
+          </Link>
+        </nav>
+
+        <Routes>
+          <Route
+            path="/"
+            element={<h1 className="text-3xl font-bold">Home Page</h1>}
+          />
+          <Route
+            path="/about"
+            element={<h1 className="text-3xl font-bold">About Us</h1>}
+          />
+          <Route
+            path="/jobs"
+            element={<h1 className="text-3xl font-bold">Job Listings</h1>}
+          />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
