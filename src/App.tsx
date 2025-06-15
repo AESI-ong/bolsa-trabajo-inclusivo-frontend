@@ -7,6 +7,7 @@ import {
   Box,
   Container,
 } from "@mui/material";
+import JobDetailPage from "./components/JobDetailPage";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/jobs/detail" element={<JobDetailPage />} />
         </Routes>
       </Container>
     </>
