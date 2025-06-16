@@ -7,6 +7,7 @@ import {
   Box
 } from "@mui/material";
 import Home from "./pages/Home/Home";
+import Footer from "./components/layout/Footer";
 
 function App() {
   return (
@@ -102,7 +103,6 @@ function App() {
   </Toolbar>
 </AppBar>
 
-
       <Box sx={{ mt: 2 }}>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -110,7 +110,7 @@ function App() {
           <Route path="/registro" element={<Registro />} />
         </Routes>
       </Box>
-    </>
+      <Footer />
   );
 }
 
