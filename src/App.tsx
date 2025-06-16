@@ -7,6 +7,7 @@ import {
   Box,
   Container,
 } from "@mui/material";
+import Footer from "./components/layout/Footer";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/jobs" element={<Jobs />} />
         </Routes>
       </Container>
+      <Footer />
     </>
   );
 }
