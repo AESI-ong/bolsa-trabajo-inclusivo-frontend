@@ -8,6 +8,7 @@ import {
   Container,
 } from "@mui/material";
 import ApplicantInfo from './pages/ApplicantInfo/applicantInfo';
+import MyApplications from "./pages/MyApplications/myApplications";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/mi_perfil" element={<ApplicantInfo />}/>
+          <Route path="/mis_aplicaciones" element={<MyApplications />}/>
         </Routes>
       </Container>
     </>

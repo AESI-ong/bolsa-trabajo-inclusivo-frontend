@@ -1,14 +1,22 @@
 import * as React from 'react';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
 
 export default function ApplicantInfo() {
   return (
   <section className="w-full bg-white justify-center">
     <div className="p-12">
-      <Stack spacing={2} direction="row" className="px-4 mb-8">
-        <Button variant="outlined" aria-label="View my curriculum">Mi curriculum</Button>
-        <Button variant="outlined" aria-label="View my applications">Mis postulaciones</Button>
+      <Stack spacing={2} direction="row" className="mb-8">
+        <Link to="/mi_perfil">
+          <button className="bg-[#8AAFD9] text-[#2164B0] px-6 py-3 rounded hover:bg-[#4A90E2] transition font-bold md:px-8 md:py-4">
+        Mi curriculum
+      </button>
+        </Link>
+       <Link to="/mi_perfil">
+        <button className="bg-[#8AAFD9] text-[#2164B0] px-6 py-3 rounded hover:bg-[#4A90E2] transition font-bold md:px-8 md:py-4">
+        Mis postulaciones
+      </button>
+      </Link>
       </Stack>
     
         <div className="bg-white border-2 border-[#2C6CB6] rounded-lg shadow-md p-6 w-full">
@@ -25,7 +33,7 @@ export default function ApplicantInfo() {
         <div className="flex items-center space-x-4 mb-4">
             <p className="text-gray-700 flex items-center">
                 <img
-                    src="../../src/assets/applicantInfo/clock.svg"
+                    src="../../src/assets/applicantInfo/mail.svg"
                     width={20}
                     height={20}
                     className="mr-2"
@@ -35,16 +43,18 @@ export default function ApplicantInfo() {
             </p>
             <p className="text-gray-700 flex items-center">
                 <img
-                    src="../../src/assets/applicantInfo/map_pin.svg"
+                    src="../../src/assets/applicantInfo/phone.svg"
                     width={20}
                     height={20}
                     className="mr-2"
-                    alt="Phone Icon"
+                    alt="telefono"
                 />
                 999720123
             </p>
             <div className="ml-auto">
-                <Button variant="contained">Editar</Button>
+           <button className="bg-[#3862af] text-white w-32 py-2 rounded hover:bg-blue-700 transition">
+              Editar
+            </button>   
             </div>
         </div>
 
@@ -54,7 +64,9 @@ export default function ApplicantInfo() {
       </h2>
       <p className="text-gray-600">Te enviamos un correo para que puedas adjuntarlo</p>
           <div className="flex justify-center mt-4">
-            <Button variant="contained">Seleccionar archivo</Button>
+            <button className="bg-[#3862af] text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+              Seleccionar archivo
+            </button>
           </div>
       </div>    
      </div>
