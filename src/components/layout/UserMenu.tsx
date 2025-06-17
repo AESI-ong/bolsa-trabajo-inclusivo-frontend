@@ -4,17 +4,15 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import type { MenuProps } from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import EditIcon from '@mui/icons-material/Edit';
 import Divider from '@mui/material/Divider';
-import ArchiveIcon from '@mui/icons-material/Archive';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Box from '@mui/material/Box';
 import MiAreaSVG from '../../assets/UserMenu/mi_area.svg';
 import MiCvSVG from '../../assets/UserMenu/mi_cv.svg';
 import PostulacionesSVG from '../../assets/UserMenu/mis_postulaciones.svg';
 import CerrarSesionSVG from '../../assets/UserMenu/cerrar_sesion.svg';
 import NotificacionSVG from '../../assets/UserMenu/notificacion.svg';
+import { useNavigate } from 'react-router-dom';
+
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -40,7 +38,7 @@ const StyledMenu = styled((props: MenuProps) => (
     },
     '& .MuiMenuItem-root': {
       width: '175px', 
-      fontSize: '12px', 
+      fontSize: '14px', 
       '& .MuiSvgIcon-root': {
         color: theme.palette.text.secondary,
         marginRight: theme.spacing(1.5),
@@ -61,6 +59,13 @@ const StyledMenu = styled((props: MenuProps) => (
 export default function UserMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  
+  const navigate = useNavigate();
+
+  const redirectMiCV = () => {
+    navigate('/mi-cv'); // Use navigate instead of window.location.href
+  };
+  
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -113,7 +118,7 @@ export default function UserMenu() {
         <img src={MiAreaSVG} style={{ width: 18, height: 18, marginRight: '8px' }} />
           Mi área
         </MenuItem>
-        <MenuItem onClick={handleClose} disableRipple>
+        <MenuItem onClick={redirectMiCV} disableRipple>
           <img src={MiCvSVG} style={{ width: 18, height: 18, marginRight: '8px' }} />
           Mi CV
         </MenuItem>
