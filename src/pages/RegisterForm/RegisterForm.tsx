@@ -1,6 +1,8 @@
 import { useState } from 'react'; 
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
+import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
 import PasswordVisibilityOn from '../../assets/RegisterForm/password_on.svg';
 import PasswordVisibilityOff from '../../assets/RegisterForm/password_off.svg';
 
@@ -11,8 +13,7 @@ export default function RegisterForm() {
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
-
-
+ 
   return (
     <section className="w-full bg-white justify-center px-72 pt-6 pb-10">
     <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">
@@ -146,11 +147,19 @@ export default function RegisterForm() {
         </div>
      
     </form>
-     <div className="flex justify-center">
-          <button className="bg-[#3862af] text-white w-32 py-2 rounded hover:bg-blue-700 transition">
-            Crear Cuenta
-          </button>
-      </div>
+      <div className="flex justify-center">
+      <Button
+        component={Link}
+        to="/mi-area"
+        sx={{
+          backgroundColor: "#3862af",
+          color: "#fff",
+         }}
+        variant="contained"
+      >
+        Crear Cuenta
+      </Button>
+    </div>
     </section>
   );
 }

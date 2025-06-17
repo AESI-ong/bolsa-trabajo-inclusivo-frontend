@@ -1,15 +1,9 @@
-import { Routes, Route, Link } from "react-router-dom";
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import Home from "./pages/Home/Home";
-import Footer from "./components/layout/Footer";
-import Applicant from './pages/ApplicantInfo/Applicant';
-import RegisterForm from "./pages/RegisterForm/RegisterForm";
-import Logged from "./pages/RegisterForm/Logged";
-
-
-function App() {
+import { AppBar, Toolbar, Box, Typography, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
+import UserMenu from '../../components/layout/UserMenu';
+export default function Logged() {
   return (
-    <>
+    <div className="w-full bg-white justify-center">
       <AppBar
         position="static"
         sx={{
@@ -69,68 +63,13 @@ function App() {
             />
           </Box>
           {/* Derecha: Botones */}
-         
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Button
-              color="inherit"
-              component={Link}
-              to="/login"
-              sx={{
-                backgroundColor: "#fff",
-                color: "#000000",
-                "&:hover": {
-                  backgroundColor: "#fff",
-                },
-              }}
-            >
-              Login
-            </Button>
-            <Button
-              component={Link}
-              to="/registro"
-              sx={{
-                backgroundColor: "#c62828",
-                color: "#fff",
-                "&:hover": {
-                  backgroundColor: "#b71c1c",
-                },
-              }}
-              variant="contained"
-            >
-              Regístrate
-            </Button>
+            <UserMenu />
           </Box>
         </Toolbar>
       </AppBar>
 
-      <Box sx={{ mt: 2 }}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/registro" element={<RegisterForm />} />
-          <Route path="/mi-cv" element={<Applicant />}/>
-          <Route path="/mi-area" element={<Logged />} />
-        </Routes>
-      </Box>
-      <Footer />
-    </>
+      
+    </div>
   );
 }
-
-function Login() {
-  return (
-    <Box>
-      <Typography variant="h4">Iniciar sesión</Typography>
-    </Box>
-  );
-}
-
-function Registro() {
-  return (
-    <Box>
-      <Typography variant="h4">Registro</Typography>
-    </Box>
-  );
-}
-
-export default App;
