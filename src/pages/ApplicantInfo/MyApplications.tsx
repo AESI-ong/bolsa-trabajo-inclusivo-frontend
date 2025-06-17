@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import ApplicationCard from '../../components/MyApplications/applicationCard';
+import ApplicationCard from '../../components/MyApplications/ApplicationCard';
 import Stack from '@mui/material/Stack';
 
 type Application = {
@@ -34,9 +33,36 @@ const applications: Application[] = [
         location: 'San Isidro, Lima, Peru',
         candidates: 3,
     },
+    {
+        id: 3,
+        title: 'Auxiliar de Producción',
+        company: 'Manpower',
+        status: 'CV visto',
+        date: 'Ayer',
+        location: 'San Isidro, Lima, Peru',
+        candidates: 3,
+    },
+    {
+        id: 4,
+        title: 'Auxiliar de Producción',
+        company: 'Manpower',
+        status: 'CV visto',
+        date: 'Ayer',
+        location: 'San Isidro, Lima, Peru',
+        candidates: 3,
+    },
+    {
+        id: 5,
+        title: 'Auxiliar de Producción',
+        company: 'Manpower',
+        status: 'CV visto',
+        date: 'Ayer',
+        location: 'San Isidro, Lima, Peru',
+        candidates: 3,
+    },
 ];
 
-const itemsPerPage = 5;
+const itemsPerPage = 3;
 
 const MyApplications: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -50,9 +76,9 @@ const MyApplications: React.FC = () => {
     const currentApplications = applications.slice(startIndex, startIndex + itemsPerPage);
 
     return (
-        <div>
+        <section className="w-full bg-white justify-center px-30 pt-6 pb-10">
             <Box>
-                <h2  className="text-3xl font-bold mb-8 flex items-center">
+                <h2 className="text-3xl md:text-4xl font-bold mb-6">
                     Mis Postulaciones
                 </h2>
                 <Stack direction="row" spacing={2} sx={{ marginBottom: 5,  marginTop: 5 }}>
@@ -66,7 +92,7 @@ const MyApplications: React.FC = () => {
                                 backgroundColor: "rgba(255, 255, 0, 0.1)",
                             },
                             fontWeight: "bold",
-                            padding: "10px 20px", 
+                            padding: "12px 20px", 
                         }}
                     >
                         Postulado
@@ -81,7 +107,7 @@ const MyApplications: React.FC = () => {
                                 backgroundColor: "rgba(255, 255, 0, 0.1)",
                             },
                             fontWeight: "bold",
-                            padding: "10px 20px", 
+                            padding: "12px 20px", 
                         }}
                     >
                         CV visto
@@ -92,21 +118,21 @@ const MyApplications: React.FC = () => {
                         <ApplicationCard key={job.id} {...job} location={job.location ?? ''} />
                     ))}
                 </Box>
-
-                <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+                 <div className="flex justify-center mt-6 space-x-2">
                     {Array.from({ length: totalPages }, (_, i) => (
-                        <Button 
-                            key={i} 
-                            variant={currentPage === i + 1 ? "contained" : "outlined"} 
-                            onClick={() => handlePageClick(i + 1)}
-                            sx={{ marginRight: 1 }}
-                        >
-                            {i + 1}
-                        </Button>
+                    <button
+                        key={i}
+                        onClick={() => handlePageClick(i + 1)}
+                        className={`px-3 py-1 rounded border ${
+                        currentPage === i + 1 ? "bg-[#2164B0] text-white" : ""
+                        }`}
+                    >
+                        {i + 1}
+                    </button>
                     ))}
-                </Box>
+                </div>
             </Box>
-        </div>
+        </section>
     );
 };
 
