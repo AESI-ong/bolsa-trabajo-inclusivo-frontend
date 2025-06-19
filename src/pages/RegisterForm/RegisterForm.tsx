@@ -23,9 +23,7 @@ export default function RegisterForm() {
     <form className='p-20' 
       onSubmit={(event) => {
         event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        const formJson = Object.fromEntries((formData as any).entries());
-        console.log(formJson);
+        // Aquí manejar el envío del formulario
       }}
     >
         <div className="mb-4">

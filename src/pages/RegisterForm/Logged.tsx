@@ -1,6 +1,6 @@
-import { AppBar, Toolbar, Box, Typography, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { AppBar, Toolbar, Box, Typography } from '@mui/material';
 import UserMenu from '../../components/layout/UserMenu';
+
 export default function Logged() {
   return (
     <div className="w-full bg-white justify-center">

@@ -1,6 +1,7 @@
 import { Routes, Route, Link } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import Home from "./pages/Home/Home";
+import JobDetailPage from "./pages/JobDetailPage";
 import Footer from "./components/layout/Footer";
 import Applicant from './pages/ApplicantInfo/Applicant';
 import RegisterForm from "./pages/RegisterForm/RegisterForm";
@@ -110,6 +111,7 @@ function App() {
           <Route path="/registro" element={<RegisterForm />} />
           <Route path="/mi-cv" element={<Applicant />}/>
           <Route path="/mi-area" element={<Logged />} />
+          <Route path="/jobs/detail" element={<JobDetailPage />} />
         </Routes>
       </Box>
       <Footer />
@@ -121,14 +123,6 @@ function Login() {
   return (
     <Box>
       <Typography variant="h4">Iniciar sesión</Typography>
-    </Box>
-  );
-}
-
-function Registro() {
-  return (
-    <Box>
-      <Typography variant="h4">Registro</Typography>
     </Box>
   );
 }
