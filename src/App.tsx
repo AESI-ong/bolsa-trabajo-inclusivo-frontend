@@ -1,6 +1,7 @@
 import { Routes, Route, Link } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import Home from "./pages/Home/Home";
+import JobDetailPage from "./pages/JobDetailPage";
 import Footer from "./components/layout/Footer";
 
 function App() {
@@ -105,6 +106,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Registro />} />
+          <Route path="/jobs/detail" element={<JobDetailPage />} />
         </Routes>
       </Box>
       <Footer />

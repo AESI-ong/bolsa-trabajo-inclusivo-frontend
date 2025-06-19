@@ -32,4 +32,3 @@ const JobCard = ({ title, location, type }: JobProps) => {
 };
 
 export default JobCard;
-
