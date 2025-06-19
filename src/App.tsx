@@ -7,7 +7,7 @@ import {
   Box,
   Container,
 } from "@mui/material";
-import JobDetailPage from "./components/JobDetailPage";
+import JobDetailPage from "./pages/JobDetailPage";
 
 function App() {
   return (
