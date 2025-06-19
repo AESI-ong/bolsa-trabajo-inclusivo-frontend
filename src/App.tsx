@@ -1,11 +1,14 @@
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import Home from "./pages/Home/Home";
+import LoginPage from "./pages/LoginPage";
 import Footer from "./components/layout/Footer";
 
 function App() {
+  const location = useLocation();
   return (
     <>
+      {location.pathname !== "/login" && (
       <AppBar
         position="static"
         sx={{
@@ -99,24 +102,17 @@ function App() {
           </Box>
         </Toolbar>
       </AppBar>
+      )}
 
       <Box sx={{ mt: 2 }}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/registro" element={<Registro />} />
         </Routes>
       </Box>
-      <Footer />
+      {location.pathname !== "/login" && <Footer />}
     </>
-  );
-}
-
-function Login() {
-  return (
-    <Box>
-      <Typography variant="h4">Iniciar sesión</Typography>
-    </Box>
   );
 }
 

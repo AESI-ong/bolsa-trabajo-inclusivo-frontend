@@ -6,5 +6,13 @@
   --color-amarillo-claro-aesi: #FBF1B2;
   --color-azul-aesi: #2C6DB6;
   --color-azul-claro-aesi: #8AAFD9;
+  --color-azul-oscuro-aesi: #2164B0;
   --color-verde-aesi: #55B948;
+}
+
+input[type="password"]::-ms-reveal {
+  display: none;
+}
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  display: none;
 }
