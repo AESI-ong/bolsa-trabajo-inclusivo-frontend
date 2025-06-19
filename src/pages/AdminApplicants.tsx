@@ -16,8 +16,21 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useLocation, useNavigate } from "react-router-dom";
 
+// Define interfaces for type safety
+interface Applicant {
+  id: number;
+  name: string;
+  applicationDate: string;
+}
+
+interface JobInfo {
+  jobId: number;
+  jobTitle: string;
+  company: string;
+}
+
 // Mock data for applicants by job
-const mockApplicantsByJob = {
+const mockApplicantsByJob: Record<number, Applicant[]> = {
   1: [ // Operario de Almacén
     {
       id: 1,
@@ -59,15 +72,15 @@ const mockApplicantsByJob = {
 function AdminApplicants() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [applicants, setApplicants] = useState<any[]>([]);
-  const [jobInfo, setJobInfo] = useState({
+  const [applicants, setApplicants] = useState<Applicant[]>([]);
+  const [jobInfo, setJobInfo] = useState<JobInfo>({
     jobId: 1,
     jobTitle: "Operario de Almacén",
     company: "Alicorp"
   });
 
   useEffect(() => {
-    // Get job information from navigation state
+    // Get job information from navigafix tion state
     if (location.state) {
       const { jobId, jobTitle, company } = location.state;
       setJobInfo({ jobId, jobTitle, company });
