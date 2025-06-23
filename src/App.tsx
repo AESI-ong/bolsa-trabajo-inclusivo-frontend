@@ -111,7 +111,7 @@ function App() {
           <Route path="/registro" element={<RegisterForm />} />
           <Route path="/mi-cv" element={<Applicant />}/>
           <Route path="/mi-area" element={<Logged />} />
-          <Route path="/jobs/detail" element={<JobDetailPage />} />
+          <Route path="/job/:id" element={<JobDetailPage />} />
         </Routes>
       </Box>
       <Footer />
