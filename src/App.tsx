@@ -1,6 +1,7 @@
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import Home from "./pages/Home/Home";
+import LoginPage from "./pages/LoginPage";
 import JobDetailPage from "./pages/JobDetailPage";
 import Footer from "./components/layout/Footer";
 import Applicant from './pages/ApplicantInfo/Applicant';
@@ -9,8 +10,10 @@ import Logged from "./pages/RegisterForm/Logged";
 
 
 function App() {
+  const location = useLocation();
   return (
     <>
+      {location.pathname !== "/login" && (
       <AppBar
         position="static"
         sx={{
@@ -103,26 +106,27 @@ function App() {
           </Box>
         </Toolbar>
       </AppBar>
+      )}
 
       <Box sx={{ mt: 2 }}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/registro" element={<RegisterForm />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/registro" element={<Registro />} />
           <Route path="/mi-cv" element={<Applicant />}/>
           <Route path="/mi-area" element={<Logged />} />
           <Route path="/jobs/detail" element={<JobDetailPage />} />
         </Routes>
       </Box>
-      <Footer />
+      {location.pathname !== "/login" && <Footer />}
     </>
   );
 }
 
-function Login() {
+function Registro() {
   return (
     <Box>
-      <Typography variant="h4">Iniciar sesión</Typography>
+      <Typography variant="h4">Registro</Typography>
     </Box>
   );
 }
