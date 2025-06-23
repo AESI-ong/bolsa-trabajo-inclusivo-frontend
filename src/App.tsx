@@ -4,6 +4,10 @@ import Home from "./pages/Home/Home";
 import LoginPage from "./pages/LoginPage";
 import JobDetailPage from "./pages/JobDetailPage";
 import Footer from "./components/layout/Footer";
+import Applicant from './pages/ApplicantInfo/Applicant';
+import RegisterForm from "./pages/RegisterForm/RegisterForm";
+import Logged from "./pages/RegisterForm/Logged";
+
 
 function App() {
   const location = useLocation();
@@ -33,7 +37,6 @@ function App() {
               }}
             />
           </Box>
-
           {/* Centro: iconos1 + texto + iconos2 */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <img
@@ -69,8 +72,8 @@ function App() {
               }}
             />
           </Box>
-
           {/* Derecha: Botones */}
+         
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Button
               color="inherit"
@@ -110,6 +113,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/registro" element={<Registro />} />
+          <Route path="/mi-cv" element={<Applicant />}/>
+          <Route path="/mi-area" element={<Logged />} />
           <Route path="/jobs/detail" element={<JobDetailPage />} />
         </Routes>
       </Box>
