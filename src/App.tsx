@@ -1,17 +1,23 @@
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import Home from "./pages/Home/Home";
-import Login from "./pages/Login";
+
 import Register from "./pages/Register";
 import Admin from "./pages/Admin";
 import AdminApplicants from "./pages/AdminApplicants";
 import CreateJobOffer from "./pages/CreateJobOffer";
+import LoginPage from "./pages/LoginPage";
+import JobDetailPage from "./pages/JobDetailPage";
 import Footer from "./components/layout/Footer";
+import Applicant from './pages/ApplicantInfo/Applicant';
+import RegisterForm from "./pages/RegisterForm/RegisterForm";
+import Logged from "./pages/RegisterForm/Logged";
+
 
 function App() {
   const location = useLocation();
-  const hideLayout = ["/login", "/registro", "/admin", "/admin/applicants", "/admin/create-offer"].includes(location.pathname);
 
+  const hideLayout = ["/login", "/registro", "/admin", "/admin/applicants", "/admin/create-offer"].includes(location.pathname);
   return (
     <>
       {!hideLayout && (
@@ -118,11 +124,15 @@ function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/applicants" element={<AdminApplicants />} />
           <Route path="/admin/create-offer" element={<CreateJobOffer />} />
+          <Route path="/mi-cv" element={<Applicant />}/>
+          <Route path="/mi-area" element={<Logged />} />
+          <Route path="/jobs/detail" element={<JobDetailPage />} />
         </Routes>
       </Box>
       {!hideLayout && <Footer />}
     </>
   );
 }
+
 
 export default App;
