@@ -1,22 +1,29 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "noEmit": true,
-    "jsx": "preserve",
-    "esModuleInterop": true,
     "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
-    "forceConsistentCasingInFileNames": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "plugins": [{ "name": "next" }]
+
+    "types": [ "vite/client", "vite-plugin-svgr/client"],
   },
-  "include": ["src", "next-env.d.ts", "components/Footer.tsx", "components/Home/HeroSection.tsx", "components/Home/CategoriesSection.tsx", "components/Home/JobListSection.tsx", "components/JobDescriptionSection.tsx", "components/JobCard.tsx", "components/CategoryCard.tsx", "components/MyApplications", "components/UserMenu.tsx", "interfaces/Job.ts", "src/pages/RegisterForm", "app/registro/Logged.tsx", "app/registro/page.tsx", "app/login/page.tsx", "app/admin/page.tsx", "app/admin/nueva-oferta/page.tsx", "components/ApplicantInfo", "components/applicationCard.tsx"]
+  "include": ["src"]
 }
