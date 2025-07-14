@@ -1,56 +1,45 @@
-"use client";
+'use client';
 
-import {
-  Box,
-  Typography,
-  Button,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { Box, Typography, Button, Table, TableHead, TableRow, TableCell, TableBody, MenuItem, Select } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Job } from "../../interfaces/Job";
 import api from "../../utils/axiosInstance";
+import { withRoleProtection } from "../../utils/withRoleProtection";
 import { useUser } from "../../interfaces/UserContext";
 
-export default function AdminDashboard() {
+function AdminDashboard() {
   const router = useRouter();
-  const { user, loading: userLoading } = useUser(); // 👈 usa loading del contexto
+  const { user } = useUser();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔐 Protección de ruta: si no es admin, redirige
   useEffect(() => {
-    if (!userLoading) {
-      if (!user || user?.role !== "admin") {
-        router.push("/login"); // o /not-authorized si tienes una página especial
-      }
-    }
-  }, [user, userLoading]);
-
-  // 🧠 Obtener las ofertas solo si es admin
-  useEffect(() => {
-    if (user && user?.role === "admin") {
-      api
-        .get("/job-offers/")
-        .then((res) => setJobs(res.data))
-        .catch((err) => {
-          console.error("Error al obtener ofertas de trabajo:", err);
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [user]);
+    api
+      .get('/job-offers/')
+      .then((res) => setJobs(res.data))
+      .catch((err) => console.error("Error al obtener ofertas de trabajo:", err))
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleStatusChange = async (token: string, newStatus: string) => {
+    const jobToUpdate = jobs.find((job) => job.token === token);
+    if (!jobToUpdate) return;
+
+    const updatedData = {
+      title: jobToUpdate.title,
+      location: jobToUpdate.location,
+      description: jobToUpdate.description,
+      job_type: jobToUpdate.job_type,
+      responsibilities: jobToUpdate.responsibilities,
+      skills: jobToUpdate.skills,
+      sector: jobToUpdate.sector,
+      active: newStatus === "Activo",
+    };
+
     try {
-      await api.patch(`/job-offers/${token}`, {
-        active: newStatus === "Activo",
-      });
+      await api.patch(`/job-offers/${token}`, updatedData);
+
       const updatedJobs = jobs.map((job) =>
         job.token === token ? { ...job, active: newStatus === "Activo" } : job
       );
@@ -60,9 +49,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // 🙅 Evita renderizar mientras no se cargue user o si no es admin
-  if (userLoading || !user || user?.role !== "admin") return null;
-  
   return (
     <Box sx={{ padding: 4 }}>
       <Typography variant="h5" align="center" fontWeight="bold" mt={4} mb={3}>
@@ -115,7 +101,16 @@ export default function AdminDashboard() {
                     <MenuItem value="Inactivo">Inactivo</MenuItem>
                   </Select>
                 </TableCell>
-                <TableCell>{job.total_applicants?job.total_applicants:"0"}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="text"
+                    sx={{ color: "#1e56a0", fontWeight: "bold", textTransform: "none" }}
+                    disabled={!job.total_applicants}
+                    onClick={() => router.push(`/admin-dashboard/ver-postulantes/${job.token}`)}
+                  >
+                    {job.total_applicants ?? "0"}
+                  </Button>
+                </TableCell>
               </TableRow>
             ))
           )}
@@ -125,5 +120,4 @@ export default function AdminDashboard() {
   );
 }
 
-
-
+export default withRoleProtection(AdminDashboard, ['admin']);

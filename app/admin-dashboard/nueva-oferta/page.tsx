@@ -91,6 +91,7 @@ export default function NewJobForm() {
 
   return (
     <Box sx={{ padding: 4, maxWidth: 700, mx: "auto" }}>
+      
       <Typography variant="h6" align="center" fontWeight="bold" mb={3}>
         Crear Nueva Oferta de Trabajo
       </Typography>
@@ -118,14 +119,50 @@ export default function NewJobForm() {
 
         {/* Ubicación */}
         <Box>
-          <Typography fontWeight="bold">Ubicación:</Typography>
-          <TextField
-            fullWidth
-            value={job.location}
-            onChange={(e) => handleChange("location", e.target.value)}
-            sx={{ backgroundColor: "#fff", mt: 0.5 }}
-          />
-        </Box>
+        <Typography fontWeight="bold">Ubicación:</Typography>
+        <Select
+          fullWidth
+          value={job.location}
+          onChange={(e) => handleChange("location", e.target.value)}
+          sx={{ backgroundColor: "#fff", mt: 0.5 }}
+          displayEmpty
+        >
+          <MenuItem value="" disabled>Seleccionar ubicación</MenuItem>
+          <MenuItem value="Ancón">Ancón</MenuItem>
+          <MenuItem value="Ate">Ate</MenuItem>
+          <MenuItem value="Barranco">Barranco</MenuItem>
+          <MenuItem value="Breña">Breña</MenuItem>
+          <MenuItem value="Carabayllo">Carabayllo</MenuItem>
+          <MenuItem value="Chorrillos">Chorrillos</MenuItem>
+          <MenuItem value="Comas">Comas</MenuItem>
+          <MenuItem value="El Agustino">El Agustino</MenuItem>
+          <MenuItem value="Independencia">Independencia</MenuItem>
+          <MenuItem value="Jesús María">Jesús María</MenuItem>
+          <MenuItem value="La Molina">La Molina</MenuItem>
+          <MenuItem value="La Victoria">La Victoria</MenuItem>
+          <MenuItem value="Lince">Lince</MenuItem>
+          <MenuItem value="Los Olivos">Los Olivos</MenuItem>
+          <MenuItem value="Lurigancho">Lurigancho</MenuItem>
+          <MenuItem value="Lurín">Lurín</MenuItem>
+          <MenuItem value="Magdalena del Mar">Magdalena del Mar</MenuItem>
+          <MenuItem value="Miraflores">Miraflores</MenuItem>
+          <MenuItem value="Pueblo Libre">Pueblo Libre</MenuItem>
+          <MenuItem value="Puente Piedra">Puente Piedra</MenuItem>
+          <MenuItem value="Rímac">Rímac</MenuItem>
+          <MenuItem value="San Borja">San Borja</MenuItem>
+          <MenuItem value="San Isidro">San Isidro</MenuItem>
+          <MenuItem value="San Juan de Lurigancho">San Juan de Lurigancho</MenuItem>
+          <MenuItem value="San Juan de Miraflores">San Juan de Miraflores</MenuItem>
+          <MenuItem value="San Luis">San Luis</MenuItem>
+          <MenuItem value="San Martín de Porres">San Martín de Porres</MenuItem>
+          <MenuItem value="San Miguel">San Miguel</MenuItem>
+          <MenuItem value="Santiago de Surco">Santiago de Surco</MenuItem>
+          <MenuItem value="Surquillo">Surquillo</MenuItem>
+          <MenuItem value="Villa El Salvador">Villa El Salvador</MenuItem>
+          <MenuItem value="Villa María del Triunfo">Villa María del Triunfo</MenuItem>
+          <MenuItem value="Callao">Callao</MenuItem>
+        </Select>
+      </Box>
 
         {/* Descripción */}
         <Box sx={{ gridColumn: "span 2" }}>
@@ -158,14 +195,25 @@ export default function NewJobForm() {
 
         {/* Sector */}
         <Box>
-          <Typography fontWeight="bold">Sector:</Typography>
-          <TextField
-            fullWidth
-            value={job.sector}
-            onChange={(e) => handleChange("sector", e.target.value)}
-            sx={{ backgroundColor: "#fff", mt: 0.5 }}
-          />
-        </Box>
+        <Typography fontWeight="bold">Sector:</Typography>
+        <Select
+          fullWidth
+          value={job.sector}
+          onChange={(e) => handleChange("sector", e.target.value)}
+          sx={{ backgroundColor: "#fff", mt: 0.5 }}
+          displayEmpty
+        >
+          <MenuItem value="" disabled>Seleccionar categoría</MenuItem>
+          <MenuItem value="Agricultura">Agricultura</MenuItem>
+          <MenuItem value="Comercio">Comercio</MenuItem>
+          <MenuItem value="Construcción">Construcción</MenuItem>
+          <MenuItem value="Hotelería y Turismo">Hotelería y Turismo</MenuItem>
+          <MenuItem value="Educación">Educación</MenuItem>
+          <MenuItem value="Servicios financieros">Servicios financieros</MenuItem>
+          <MenuItem value="Transporte">Transporte</MenuItem>
+          <MenuItem value="Ventas">Ventas</MenuItem>
+        </Select>
+      </Box>
 
         {/* Responsabilidades */}
         <Box sx={{ gridColumn: "span 2" }}>

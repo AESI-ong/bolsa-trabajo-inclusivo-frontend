@@ -4,7 +4,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import {
-  AppBar, Toolbar, Typography, Button, Box, Menu, MenuItem, IconButton
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box,
+  Menu,
+  MenuItem,
+  IconButton,
 } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useUser } from '../interfaces/UserContext';
@@ -25,8 +32,9 @@ export default function NavBar() {
 
   const handleLogout = async () => {
     try {
-      await api.post('/logout');
+      await api.post('/logout'); // opcional si tu backend lo maneja
       localStorage.removeItem('access_token');
+      localStorage.removeItem('user'); // Limpia también por si acaso
       setUser(null);
       handleClose();
       router.push('/login');
@@ -36,39 +44,42 @@ export default function NavBar() {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#ffffff", boxShadow: "none", padding: "10px 20px" }}>
-      <Toolbar sx={{ justifyContent: "space-between" }}>
+    <AppBar
+      position="static"
+      sx={{ backgroundColor: '#ffffff', boxShadow: 'none', padding: '10px 20px' }}
+    >
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
         <Link href="/" passHref>
-          <Box sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
-            <img src="/assets/Home/Aesi logo.png" alt="AESI" style={{ height: "40px", width: "auto" }} />
+          <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+            <img src="/assets/Home/Aesi logo.png" alt="AESI" style={{ height: '40px', width: 'auto' }} />
           </Box>
         </Link>
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <img src="/assets/Home/iconos1.png" alt="Iconos izquierda" style={{ height: "50px", marginRight: "18px" }} />
-          <Typography variant="h4" sx={{ fontWeight: "bold", color: "#000" }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <img src="/assets/Home/iconos1.png" alt="Iconos izquierda" style={{ height: '50px', marginRight: '18px' }} />
+          <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#000' }}>
             Bolsa de empleo inclusivo
           </Typography>
-          <img src="/assets/Home/iconos2.png" alt="Iconos derecha" style={{ height: "50px", marginLeft: "18px" }} />
+          <img src="/assets/Home/iconos2.png" alt="Iconos derecha" style={{ height: '50px', marginLeft: '18px' }} />
         </Box>
 
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {loading ? null : !user ? (
             <Link href="/login" passHref>
-              <Button sx={{ backgroundColor: "#c62828", color: "#fff" }}>
+              <Button sx={{ backgroundColor: '#c62828', color: '#fff' }}>
                 Iniciar Sesión
               </Button>
             </Link>
           ) : (
             <>
-              <IconButton onClick={handleMenu} sx={{ color: "#000" }}>
+              <IconButton onClick={handleMenu} sx={{ color: '#000' }}>
                 <AccountCircle />
                 <Typography sx={{ ml: 1 }}>
-                  {user?.first_name} {user?.last_name}
+                  {user.first_name} {user.last_name}
                 </Typography>
               </IconButton>
               <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-                {user?.role === 'applicant' && [
+                {user.role === 'applicant' && [
                   <MenuItem key="cv" onClick={handleClose}>
                     <Link href="/dashboard">Mi CV</Link>
                   </MenuItem>,
@@ -76,11 +87,11 @@ export default function NavBar() {
                     <Link href="/dashboard">Mis Postulaciones</Link>
                   </MenuItem>
                 ]}
-                {user?.role === 'admin' && [
-                  <MenuItem key="admin-dashboard" onClick={handleClose}>
+                {user.role === 'admin' && (
+                  <MenuItem onClick={handleClose}>
                     <Link href="/admin-dashboard">Dashboard</Link>
                   </MenuItem>
-                ]}
+                )}
                 <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
               </Menu>
             </>

@@ -13,6 +13,7 @@ interface UserContextType {
   user: FullUser | null;
   loading: boolean;
   setUser: (user: FullUser | null) => void;
+  refreshUser: () => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -21,37 +22,36 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<FullUser | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const fetchUser = async () => {
+    try {
+      const userRes = await api.get<User>('/users/me/');
+      const userData: FullUser = userRes.data;
+
+      if (userData.role === 'applicant') {
+        const applicantRes = await api.get<Applicant>('/applicants/me/');
+        userData.applicant_profile = applicantRes.data;
+      }
+
+      setUser(userData);
+    } catch (error) {
+      console.error('Error al cargar el usuario:', error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (!token) {
       setLoading(false);
       return;
     }
-
-    const fetchUser = async () => {
-      try {
-        const userRes = await api.get<User>('/users/me/');
-        const userData: FullUser = userRes.data;
-
-        if (userData.role === 'applicant') {
-          const applicantRes = await api.get<Applicant>('/applicants/me/');
-          userData.applicant_profile = applicantRes.data;
-        }
-
-        setUser(userData);
-      } catch (error) {
-        console.error('Error al cargar el usuario:', error);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUser();
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, loading, setUser }}>
+    <UserContext.Provider value={{ user, loading, setUser, refreshUser: fetchUser }}>
       {children}
     </UserContext.Provider>
   );

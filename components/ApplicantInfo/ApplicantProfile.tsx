@@ -1,68 +1,253 @@
 'use client';
 
-import React from 'react';
-import { useUser } from '../../interfaces/UserContext'; // Asegúrate de que la ruta es correcta
+import React, { useState } from 'react';
+import { useUser } from '../../interfaces/UserContext';
+import api from '../../utils/axiosInstance';
 
 const ApplicantInfo: React.FC = () => {
-    const { user } = useUser();
+  const { user, setUser } = useUser();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadMessage, setUploadMessage] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    first_name: user?.first_name || '',
+    last_name: user?.last_name || '',
+    phone_number: user?.applicant_profile?.phone_number || '',
+    current_password: '',
+    new_password: '',
+    confirm_password: ''
+  });
 
-    if (!user) return null; // O un loader si prefieres
+  if (!user) return null;
 
-    return (
-        <div className="px-30 py-10">
-            <div className="bg-white border-2 border-[#2C6CB6] rounded-lg shadow-md w-full p-6">
-                <div className="flex items-center gap-2 mb-2">
-                    <img
-                        src={'/assets/ApplicantInfo/user_blue.svg'}
-                        alt="usuario"
-                        className="w-20 h-20"
-                    />
-                    <h2 className="text-2xl font-bold">{user?.first_name} {user?.last_name}</h2>
-                </div>
-                <div className="flex items-center space-x-4 mb-4">
-                    <p className="text-gray-700 flex items-center">
-                        <img
-                            src={'/assets/ApplicantInfo/mail.svg'}
-                            width={20}
-                            height={20}
-                            className="mr-2"
-                            alt="Email Icon"
-                        />
-                        {user?.email}
-                    </p>
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-                    {user?.applicant_profile?.phone_number && (
-                        <p className="text-gray-700 flex items-center">
-                            <img
-                                src={'/assets/ApplicantInfo/phone.svg'}
-                                width={20}
-                                height={20}
-                                className="mr-2"
-                                alt="telefono"
-                            />
-                            {user?.applicant_profile?.phone_number}
-                        </p>
-                    )}
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
 
-                    <div className="ml-auto">
-                        <button className="bg-[#3862af] text-white w-32 py-2 rounded hover:bg-blue-700 transition">
-                            Editar
-                        </button>
-                    </div>
-                </div>
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setFormData({
+      first_name: user.first_name || '',
+      last_name: user.last_name || '',
+      phone_number: user.applicant_profile?.phone_number || '',
+      current_password: '',
+      new_password: '',
+      confirm_password: ''
+    });
+  };
 
-                <div className="border-b-2 border-[#2C6CB6] mb-4"></div>
-                <h2 className="text-2xl font-bold mb-8">No olvides tu CV</h2>
-                <p className="text-gray-600">Te enviamos un correo para que puedas adjuntarlo</p>
-                <div className="flex justify-center mt-4">
-                    <button className="bg-[#3862af] text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                        Seleccionar archivo
-                    </button>
-                </div>
-            </div>
+  const handleSaveChanges = async () => {
+    try {
+      const payload: any = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        phone_number: formData.phone_number,
+      };
+
+      if (formData.current_password && formData.new_password && formData.confirm_password) {
+        payload.current_password = formData.current_password;
+        payload.new_password = formData.new_password;
+        payload.confirm_password = formData.confirm_password;
+      }
+
+      await api.patch('/applicants/me', payload);
+
+      const applicantRes = await api.get('/applicants/me');
+      setUser({
+        ...user,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        applicant_profile: applicantRes.data,
+      });
+
+      setUploadMessage('Perfil actualizado exitosamente.');
+      setIsEditing(false);
+    } catch (err) {
+      console.error('Error al actualizar el perfil:', err);
+      setUploadMessage('Error al actualizar el perfil.');
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      setUploadMessage("Debes seleccionar un archivo válido.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('cv_file', selectedFile);
+
+    try {
+      await api.post(`/applicants/me/cv`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const applicantRes = await api.get('/applicants/me');
+
+      if (user) {
+        setUser({
+          ...user,
+          applicant_profile: applicantRes.data,
+        });
+      }
+
+      setUploadMessage('CV subido con éxito.');
+    } catch (error) {
+      console.error('Error al subir el CV:', error);
+      setUploadMessage('Error al subir el CV.');
+    }
+  };
+
+  const handleDownloadCV = async () => {
+    try {
+      const res = await api.get(`/applicants/cv/download/${user.applicant_profile.cv_url}`, {
+        responseType: 'blob'
+      });
+
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', user.applicant_profile.cv_url);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error al descargar el CV:', error);
+    }
+  };
+
+  return (
+    <div className="px-30 py-10">
+      <div className="bg-white border-2 border-[#2C6CB6] rounded-lg shadow-md w-full p-6">
+        <div className="flex items-center gap-2 mb-2">
+          <img src={'/assets/ApplicantInfo/user_blue.svg'} alt="usuario" className="w-20 h-20" />
+          <h2 className="text-2xl font-bold">
+            {isEditing ? (
+              <>
+                <input
+                  type="text"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleInputChange}
+                  className="border rounded px-2 py-1"
+                />
+                <input
+                  type="text"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleInputChange}
+                  className="border rounded px-2 py-1 ml-2"
+                />
+              </>
+            ) : (
+              `${user.first_name} ${user.last_name}`
+            )}
+          </h2>
         </div>
-    );
+
+        <div className="flex items-center space-x-4 mb-4">
+          <p className="text-gray-700 flex items-center">
+            <img src={'/assets/ApplicantInfo/mail.svg'} width={20} height={20} className="mr-2" alt="Email Icon" />
+            {user?.email}
+          </p>
+          <p className="text-gray-700 flex items-center">
+            <img src={'/assets/ApplicantInfo/phone.svg'} width={20} height={20} className="mr-2" alt="telefono" />
+            {isEditing ? (
+              <input
+                type="text"
+                name="phone_number"
+                value={formData.phone_number}
+                onChange={handleInputChange}
+                className="border rounded px-2 py-1"
+              />
+            ) : (
+              user.applicant_profile?.phone_number
+            )}
+          </p>
+          <div className="ml-auto">
+            {!isEditing ? (
+              <button className="bg-[#3862af] text-white w-32 py-2 rounded hover:bg-blue-700 transition" onClick={handleEditClick}>
+                Editar
+              </button>
+            ) : (
+              <div className="flex gap-2">
+                <button onClick={handleSaveChanges} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                  Guardar
+                </button>
+                <button onClick={handleCancelEdit} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
+                  Cancelar
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {isEditing && (
+          <div className="mb-4">
+            <label className="block font-semibold">Contraseña actual</label>
+            <input type="password" name="current_password" value={formData.current_password} onChange={handleInputChange} className="border w-full px-2 py-1 rounded" />
+            <label className="block font-semibold mt-2">Nueva contraseña</label>
+            <input type="password" name="new_password" value={formData.new_password} onChange={handleInputChange} className="border w-full px-2 py-1 rounded" />
+            <label className="block font-semibold mt-2">Confirmar nueva contraseña</label>
+            <input type="password" name="confirm_password" value={formData.confirm_password} onChange={handleInputChange} className="border w-full px-2 py-1 rounded" />
+          </div>
+        )}
+
+        <div className="border-b-2 border-[#2C6CB6] mb-4"></div>
+
+        <h2 className="text-2xl font-bold mb-4">No olvides tu CV</h2>
+
+        {user?.applicant_profile?.cv_url && (
+          <div className="flex justify-center mb-4">
+            <button
+              onClick={handleDownloadCV}
+              className="bg-[#2164B0] text-white px-4 py-2 rounded hover:bg-[#1a4f8c] transition"
+            >
+              Descargar CV
+            </button>
+          </div>
+        )}
+
+        <div className="mb-4 flex flex-col items-center">
+          <label htmlFor="cvUpload" className="bg-gray-200 px-4 py-2 rounded cursor-pointer hover:bg-gray-300">
+            Seleccionar archivo
+          </label>
+          <input
+            id="cvUpload"
+            type="file"
+            accept=".pdf,.doc,.docx"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+        </div>
+
+        <div className="flex justify-center">
+          <button
+            onClick={handleUpload}
+            className="bg-[#3862af] text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          >
+            Subir CV
+          </button>
+        </div>
+
+        {uploadMessage && (
+          <p className="text-center mt-4 text-sm text-gray-700">{uploadMessage}</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default ApplicantInfo;
-

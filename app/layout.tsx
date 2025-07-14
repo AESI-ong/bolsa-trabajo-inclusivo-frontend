@@ -1,7 +1,8 @@
+// app/layout.tsx o src/app/layout.tsx
+import '../styles/global.css';
+import type { Metadata } from 'next';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
-import type { Metadata } from 'next';
-import '../styles/global.css';
 import { UserProvider } from '../interfaces/UserContext';
 
 export const metadata: Metadata = {
@@ -14,12 +15,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es">
       <body>
         <UserProvider>
-        <NavBar />
-          <main style={{ marginTop: '16px'}}>
+          <NavBar />
+          <main style={{ marginTop: '16px' }}>
             {children}
           </main>
-         <Footer />
-         </UserProvider>
+          <Footer />
+        </UserProvider>
       </body>
     </html>
   );
