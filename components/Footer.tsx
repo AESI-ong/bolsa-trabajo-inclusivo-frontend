@@ -60,7 +60,7 @@ const Footer = () => {
             Recibe noticias de AESI
           </h2>
           <div className="flex mb-8">
-            <button className="cursor-pointer bg-rojo-aesi text-white px-10 py-2 font-medium transition-colors shadow-lg rounded-xl">
+            <button className="cursor-pointer bg-red-600 text-white px-10 py-2 font-medium transition-colors shadow-lg rounded-xl">
               Suscríbete
             </button>
           </div>

@@ -5,14 +5,23 @@ import { useEffect, useState } from 'react';
 import api from '../../../../utils/axiosInstance';
 import { useUser } from '../../../../interfaces/UserContext';
 import type { Job } from '../../../../interfaces/Job';
+import { withRoleProtection } from '../../../../utils/withRoleProtection';
+import CustomSnackbar from '../../../../components/CustomSnackbar';
 
-export default function ApplyPage() {
+function ApplyPage() {
   const { token } = useParams(); // Obtener token desde la URL
   const router = useRouter();
   const { user, loading } = useUser();
   const [job, setJob] = useState<Job | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'info',
+  });
+  const handleSnackbarClose = () => {
+    setSnackbar(prev => ({ ...prev, open: false }));
+  };
 
   // Redirigir si no está logueado
   useEffect(() => {
@@ -28,7 +37,12 @@ export default function ApplyPage() {
         const res = await api.get(`/job-offers/${token}`);
         setJob(res.data);
       } catch (err) {
-        setError("No se pudo cargar la oferta de trabajo.");
+        console.error(err);
+        setSnackbar({
+          open: true,
+          message: 'Error al cargar la oferta de trabajo.',
+          severity: 'error',
+        });
       }
     };
     if (token) fetchJob();
@@ -36,16 +50,25 @@ export default function ApplyPage() {
 
   const handleApply = async () => {
     setIsSubmitting(true);
-    setError('');
     try {
       await api.post('/applications/', {
         job_offer_token: token,
       });
-      alert('¡Postulación exitosa!');
+      setSnackbar({
+        open: true,
+        message: 'Postulación exitosa',
+        severity: 'success',
+      });
+      // esperar 1 segundo antes de redirigir
+      await new Promise(resolve => setTimeout(resolve, 2000));
       router.push('/');
     } catch (err: any) {
       console.error(err);
-      setError("Error al postular. Intenta nuevamente.");
+      setSnackbar({
+        open: true,
+        message: 'Error al postular. Intenta nuevamente.',
+        severity: 'error',
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -56,13 +79,17 @@ export default function ApplyPage() {
   return (
     <>
     <div className="flex flex-col items-center justify-center align-center min-h-screen bg-gray-200">
+      <CustomSnackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity as any}
+        onClose={handleSnackbarClose}
+      />
     <div className="max-w-2xl mx-auto p-6 bg-white rounded shadow ">
       <h1 className="text-2xl font-bold mb-4">{job.title}</h1>
       <p className="mb-2"><strong>Ubicación:</strong> {job.location}</p>
       <p className="mb-4"><strong>Tipo:</strong> {job.job_type === 'part_time' ? 'Medio tiempo' : 'Tiempo completo'}</p>
       <p className="mb-6">{job.description}</p>
-
-      {error && <p className="text-red-600 mb-4">{error}</p>}
 
       <button
         onClick={handleApply}
@@ -76,3 +103,5 @@ export default function ApplyPage() {
     </>
   );
 }
+
+export default withRoleProtection(ApplyPage, ['applicant']);

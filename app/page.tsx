@@ -53,5 +53,5 @@ function HomePage() {
   );
 }
 
-// 🔐 Bloquea a los admins: si es admin, redirige a /admin-dashboard
+// 🔐 Bloquea a los admins: si es admin, redirige a /admin-dashboard y a los postulantes al inicio
 export default withRoleRedirect(HomePage, 'admin', '/admin-dashboard');

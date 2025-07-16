@@ -3,11 +3,11 @@
 import React, { useState } from 'react';
 import { useUser } from '../../interfaces/UserContext';
 import api from '../../utils/axiosInstance';
+import CustomSnackbar from '../../components/CustomSnackbar';
 
 const ApplicantInfo: React.FC = () => {
   const { user, setUser } = useUser();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadMessage, setUploadMessage] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     first_name: user?.first_name || '',
@@ -17,6 +17,14 @@ const ApplicantInfo: React.FC = () => {
     new_password: '',
     confirm_password: ''
   });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'info',
+  });
+  const handleSnackbarClose = () => {
+    setSnackbar(prev => ({ ...prev, open: false }));
+  };
 
   if (!user) return null;
 
@@ -63,12 +71,30 @@ const ApplicantInfo: React.FC = () => {
         last_name: formData.last_name,
         applicant_profile: applicantRes.data,
       });
-
-      setUploadMessage('Perfil actualizado exitosamente.');
+      setSnackbar({
+        open: true,
+        message: 'Perfil actualizado exitosamente.',
+        severity: 'success',
+      });
       setIsEditing(false);
     } catch (err) {
       console.error('Error al actualizar el perfil:', err);
-      setUploadMessage('Error al actualizar el perfil.');
+      // mensaje de error en snackbar por error code 400
+      if (err.response && err.response.status === 400) {
+        setSnackbar({
+          open: true,
+          message: 'Error al actualizar el perfil. Verifica los datos ingresados.',
+          severity: 'error',
+        });
+      }
+      else {
+        setSnackbar({
+          open: true,
+          message: 'Error al actualizar el perfil.',
+          severity: 'error',
+        });
+      }
+      
     }
   };
 
@@ -80,7 +106,11 @@ const ApplicantInfo: React.FC = () => {
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      setUploadMessage("Debes seleccionar un archivo válido.");
+      setSnackbar({
+        open: true,
+        message: 'Por favor, selecciona un archivo válido para subir.',
+        severity: 'warning',
+      });
       return;
     }
 
@@ -103,16 +133,26 @@ const ApplicantInfo: React.FC = () => {
         });
       }
 
-      setUploadMessage('CV subido con éxito.');
+      setSnackbar({
+        open: true,
+        message: 'CV subido con éxito.',
+        severity: 'success',
+      });
+      setSelectedFile(null); // Limpiar el archivo seleccionado después de subir
     } catch (error) {
       console.error('Error al subir el CV:', error);
-      setUploadMessage('Error al subir el CV.');
+      setSnackbar({
+        open: true,
+        message: 'Error al subir el CV.',
+        severity: 'error',
+      });
     }
   };
 
   const handleDownloadCV = async () => {
     try {
-      const res = await api.get(`/applicants/cv/download/${user.applicant_profile.cv_url}`, {
+      const filename = user.applicant_profile.cv_url?.split('/').pop(); // Extrae solo el nombre del archivo
+      const res = await api.get(`/applicants/cv/download/${filename}`, {
         responseType: 'blob'
       });
 
@@ -123,13 +163,30 @@ const ApplicantInfo: React.FC = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
+      setSnackbar({
+        open: true,
+        message: 'Descarga del CV iniciada.',
+        severity: 'success',
+      });
     } catch (error) {
       console.error('Error al descargar el CV:', error);
+      console.error('Error details:', error.response ? error.response.data : error);
+      setSnackbar({
+        open: true,
+        message: 'Error al descargar el CV.',
+        severity: 'error',
+      });
     }
   };
 
   return (
-    <div className="px-30 py-10">
+    <div className="px-30 py-10 p-8">
+      <CustomSnackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity as any}
+        onClose={handleSnackbarClose}
+      />
       <div className="bg-white border-2 border-[#2C6CB6] rounded-lg shadow-md w-full p-6">
         <div className="flex items-center gap-2 mb-2">
           <img src={'/assets/ApplicantInfo/user_blue.svg'} alt="usuario" className="w-20 h-20" />
@@ -222,7 +279,7 @@ const ApplicantInfo: React.FC = () => {
 
         <div className="mb-4 flex flex-col items-center">
           <label htmlFor="cvUpload" className="bg-gray-200 px-4 py-2 rounded cursor-pointer hover:bg-gray-300">
-            Seleccionar archivo
+            {selectedFile ? selectedFile.name : 'Seleccionar archivo CV'}
           </label>
           <input
             id="cvUpload"
@@ -241,10 +298,6 @@ const ApplicantInfo: React.FC = () => {
             Subir CV
           </button>
         </div>
-
-        {uploadMessage && (
-          <p className="text-center mt-4 text-sm text-gray-700">{uploadMessage}</p>
-        )}
       </div>
     </div>
   );

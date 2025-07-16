@@ -44,7 +44,7 @@ const MyApplications: React.FC = () => {
   const currentApplications = applications.slice(startIndex, startIndex + itemsPerPage);
 
   return (
-    <section className="w-full bg-white justify-center px-30 pt-6 pb-10">
+    <section className="w-full bg-white justify-center px-30 pt-6 p-8">
       <Box>
         <h2 className="text-3xl md:text-4xl font-bold mb-6">Mis Postulaciones</h2>
 

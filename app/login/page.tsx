@@ -4,84 +4,122 @@ import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import api from '../../utils/axiosInstance';
-import { useUser } from '../../interfaces/UserContext';
+import { useUser } from '../../interfaces/UserContext'; 
+import CustomSnackbar from '../../components/CustomSnackbar';
+import Link from 'next/link';
+
 
 export default function Login() {
-  const router = useRouter();
-  const { user, loading, refreshUser } = useUser(); // ✅ usamos refreshUser
+const router = useRouter();
+const { refreshUser } = useUser(); // ✅ Obtenemos refreshUser del contexto
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({ email: '', password: '' });
-  const [credentials, setCredentials] = useState({ email: '', password: '' });
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
+const [showPassword, setShowPassword] = useState(false);
+const [errors, setErrors] = useState({ email: '', password: '' });
+const [credentials, setCredentials] = useState({ email: '', password: '' });
+const [loading, setLoading] = useState(false);
 
-  // Redirigir si ya está logueado
-  useEffect(() => {
-    if (!loading && user) {
-      if (user.role === 'admin') {
-        router.replace('/admin-dashboard');
-      } else {
-        router.replace('/');
-      }
+const [snackbar, setSnackbar] = useState({
+  open: false,
+  message: '',
+  severity: 'info',
+});
+
+const handleSnackbarClose = () => {
+  setSnackbar(prev => ({ ...prev, open: false }));
+};
+
+useEffect(() => {
+  const accessToken = localStorage.getItem('access_token');
+  const userData = localStorage.getItem('user');
+
+  if (accessToken && userData) {
+    const parsedUser = JSON.parse(userData);
+    if (parsedUser.role == 'admin') {
+      router.replace('/admin-dashboard');
+    } else if (parsedUser.role == 'applicant') {
+      router.replace('/');
+    }else {
+      router.replace('/login');
     }
-  }, [user, loading]);
+  }
+}, []);
 
-  const handleClickShowPassword = () => setShowPassword((prev) => !prev);
+const handleClickShowPassword = () => setShowPassword((prev) => !prev);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setCredentials({ ...credentials, [e.target.name]: e.target.value });
+};
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const newErrors = {
+    email: credentials.email.trim() === '' ? 'Este campo es obligatorio' : '',
+    password: credentials.password.trim() === '' ? 'Este campo es obligatorio' : '',
   };
+  setErrors(newErrors);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  if (Object.values(newErrors).some((error) => error !== '')) return;
 
-    const newErrors = {
-      email: credentials.email.trim() === '' ? 'Este campo es obligatorio' : '',
-      password: credentials.password.trim() === '' ? 'Este campo es obligatorio' : '',
-    };
-    setErrors(newErrors);
+  setLoading(true);
 
-    if (Object.values(newErrors).some((error) => error !== '')) return;
+  try {
+    const res = await api.post('/login', credentials);
+    const { access_token, role } = res.data;
 
-    try {
-      setLoadingSubmit(true);
-      const response = await api.post('/login', credentials);
-      const { access_token, role } = response.data;
+    localStorage.setItem('access_token', access_token);
 
-      // Guardar token
-      localStorage.setItem('access_token', access_token);
-      localStorage.setItem('user', JSON.stringify({ role })); // solo para referencia rápida
+    setSnackbar({
+      open: true,
+      message: 'Inicio de sesión exitoso.',
+      severity: 'success',
+    });
 
-      // ✅ Actualiza el usuario global desde el contexto
-      await refreshUser();
+    await refreshUser();
 
-      // Redireccionar según el rol
-      if (role === 'admin') {
-        router.push('/admin-dashboard');
-      } else {
-        router.push('/');
-      }
+    setTimeout(() => {
+      if (role === 'admin') router.push('/admin-dashboard');
+      else if (role === 'applicant') router.push('/');
+    }, 500); // espera breve para que se vea el mensaje
+  } catch (error: any) {
+    console.error('Error al iniciar sesión:', error);
 
-    } catch (error: any) {
-      console.error('Error al iniciar sesión:', error);
-      if (error.response?.data?.message) {
-        alert('Error al iniciar sesión: ' + error.response.data.message);
-      } else {
-        alert('Ocurrió un error inesperado.');
-      }
-    } finally {
-      setLoadingSubmit(false);
+    if (error.response?.status === 401) {
+      setSnackbar({
+        open: true,
+        message: 'El correo o la contraseña son incorrectos.',
+        severity: 'error',
+      });
+    } else if (error.response?.data?.message) {
+      setSnackbar({
+        open: true,
+        message: error.response.data.message,
+        severity: 'error',
+      });
+    } else {
+      setSnackbar({
+        open: true,
+        message: 'Error al iniciar sesión. Por favor, inténtalo de nuevo.',
+        severity: 'error',
+      });
     }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
-    <div className="w-full bg-white justify-center px-72 pt-6 pb-10">
+    <div className="w-full bg-white justify-center px-72 pt-8 pb-14">
+      <CustomSnackbar
+        open={snackbar.open}
+        onClose={handleSnackbarClose}
+        message={snackbar.message}
+        severity={snackbar.severity as any}
+      />
       <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">Inicio de sesión</h2>
       <p className="text-3xl text-center">Te damos la bienvenida a AESI</p>
-
-      <form className="pt-20 pb-5 pr-20 pl-20" onSubmit={handleSubmit}>
+      <form className="pt-20 p-20" onSubmit={handleSubmit}>
         <div className="mb-4">
           <p className="text-lg font-bold">Correo electrónico:</p>
           <TextField
@@ -102,6 +140,7 @@ export default function Login() {
           <p className="text-lg font-bold">Contraseña:</p>
           <TextField
             name="password"
+            id="password"
             margin="normal"
             onChange={handleChange}
             type={showPassword ? 'text' : 'password'}
@@ -112,11 +151,7 @@ export default function Login() {
               endAdornment: (
                 <InputAdornment position="end">
                   <img
-                    src={
-                      showPassword
-                        ? '../../assets/RegisterForm/password_on.svg'
-                        : '../../assets/RegisterForm/password_off.svg'
-                    }
+                    src={showPassword ? '../../assets/RegisterForm/password_on.svg' : '../../assets/RegisterForm/password_off.svg'}
                     alt="Mostrar contraseña"
                     onClick={handleClickShowPassword}
                     style={{ width: '24px', height: '24px', cursor: 'pointer', marginLeft: '8px' }}
@@ -129,20 +164,20 @@ export default function Login() {
         </div>
 
         <button
-          className="w-full bg-[#2164B0] text-white py-2 px-4 rounded-md hover:bg-[#1a4f8c] transition-colors duration-300"
+          className='w-full bg-[#2164B0] text-white py-2 px-4 rounded-md hover:bg-[#1a4f8c] transition-colors duration-300'
           type="submit"
-          disabled={loadingSubmit}
         >
-          {loadingSubmit ? 'Iniciando sesión...' : 'Iniciar sesión'}
+          Iniciar sesión
         </button>
       </form>
-
       <div className="flex justify-center mt-6">
         <Link href="/registro" passHref className="font-bold hover:underline">
           Crea tu cuenta
         </Link>
       </div>
+
     </div>
   );
 }
+
 

@@ -5,10 +5,11 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import { useRouter } from 'next/navigation';
 import api from '../../utils/axiosInstance';
-import { useUser } from '../../interfaces/UserContext'; // ✅ 1. Importa el contexto
+import { useUser } from '../../interfaces/UserContext'; 
+import CustomSnackbar from '../../components/CustomSnackbar';
 
 
-export default function Login() {
+export default function LoginAdmin() {
 const router = useRouter();
 const { refreshUser } = useUser(); // ✅ Obtenemos refreshUser del contexto
 
@@ -16,6 +17,16 @@ const [showPassword, setShowPassword] = useState(false);
 const [errors, setErrors] = useState({ email: '', password: '' });
 const [credentials, setCredentials] = useState({ email: '', password: '' });
 const [loading, setLoading] = useState(false);
+
+const [snackbar, setSnackbar] = useState({
+  open: false,
+  message: '',
+  severity: 'info',
+});
+
+const handleSnackbarClose = () => {
+  setSnackbar(prev => ({ ...prev, open: false }));
+};
 
 useEffect(() => {
   const accessToken = localStorage.getItem('access_token');
@@ -33,12 +44,21 @@ useEffect(() => {
 
 const handleClickShowPassword = () => setShowPassword((prev) => !prev);
 
-const handleChange = (e) => {
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   setCredentials({ ...credentials, [e.target.name]: e.target.value });
 };
 
-const handleSubmit = async (e) => {
+const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
+
+  const newErrors = {
+    email: credentials.email.trim() === '' ? 'Este campo es obligatorio' : '',
+    password: credentials.password.trim() === '' ? 'Este campo es obligatorio' : '',
+  };
+  setErrors(newErrors);
+
+  if (Object.values(newErrors).some((error) => error !== '')) return;
+
   setLoading(true);
 
   try {
@@ -47,25 +67,56 @@ const handleSubmit = async (e) => {
 
     localStorage.setItem('access_token', access_token);
 
-    // ✅ Aquí haces la carga del usuario completo
+    setSnackbar({
+      open: true,
+      message: 'Inicio de sesión exitoso.',
+      severity: 'success',
+    });
+
     await refreshUser();
 
-    // ✅ Redirección según rol
-    if (role === 'admin') router.push('/admin-dashboard');
-    else if (role === 'applicant') router.push('/');
-  } catch (err) {
-    alert('Login fallido');
+    setTimeout(() => {
+      if (role === 'admin') router.push('/admin-dashboard');
+      else if (role === 'applicant') router.push('/');
+    }, 1000); // espera breve para que se vea el mensaje
+  } catch (error: any) {
+    console.error('Error al iniciar sesión:', error);
+
+    if (error.response?.status === 401) {
+      setSnackbar({
+        open: true,
+        message: 'El correo o la contraseña son incorrectos.',
+        severity: 'error',
+      });
+    } else if (error.response?.data?.message) {
+      setSnackbar({
+        open: true,
+        message: error.response.data.message,
+        severity: 'error',
+      });
+    } else {
+      setSnackbar({
+        open: true,
+        message: 'Error al iniciar sesión. Por favor, inténtalo de nuevo.',
+        severity: 'error',
+      });
+    }
   } finally {
     setLoading(false);
   }
 };
 
   return (
-    <div className="w-full bg-white justify-center px-72 pt-6 pb-10">
+    <div className="w-full bg-white justify-center px-72 pt-8 pb-14">
+      <CustomSnackbar
+        open={snackbar.open}
+        onClose={handleSnackbarClose}
+        message={snackbar.message}
+        severity={snackbar.severity as any}
+      />
       <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">Inicio de sesión</h2>
       <p className="text-3xl text-center">Te damos la bienvenida a AESI</p>
-
-      <form className="pt-20 pb-5 pr-20 pl-20" onSubmit={handleSubmit}>
+      <form className="pt-20 p-20" onSubmit={handleSubmit}>
         <div className="mb-4">
           <p className="text-lg font-bold">Correo electrónico:</p>
           <TextField

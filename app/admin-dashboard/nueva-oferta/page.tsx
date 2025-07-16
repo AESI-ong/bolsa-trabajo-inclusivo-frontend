@@ -14,8 +14,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../../interfaces/UserContext";
 import api from "../../../utils/axiosInstance";
+import CustomSnackbar from '../../../components/CustomSnackbar';
+import { withRoleProtection } from "../../../utils/withRoleProtection";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-export default function NewJobForm() {
+function NewJobForm() {
   const router = useRouter();
   const { user, loading } = useUser();
 
@@ -31,6 +34,15 @@ export default function NewJobForm() {
   });
 
   const [loadingPost, setLoadingPost] = useState(false);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'info',
+  });
+
+  const handleSnackbarClose = () => {
+    setSnackbar(prev => ({ ...prev, open: false }));
+  };
 
   // Protección de ruta
   useEffect(() => {
@@ -63,10 +75,21 @@ export default function NewJobForm() {
     setLoadingPost(true);
     try {
       await api.post("/job-offers/", job);
+      setSnackbar({
+        open: true,
+        message: 'Oferta publicada exitosamente.',
+        severity: 'success',
+      });
+      //esperar 2 segundos antes de redirigir
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       router.push("/admin-dashboard");
     } catch (error) {
       console.error("Error al crear oferta:", error);
-      alert("Hubo un error al crear la oferta.");
+      setSnackbar({
+        open: true,
+        message: 'Hubo un error al crear la oferta.',
+        severity: 'error',
+      });
     } finally {
       setLoadingPost(false);
     }
@@ -76,10 +99,21 @@ export default function NewJobForm() {
     setLoadingPost(true);
     try {
       await api.post("/job-offers/", { ...job, active: false });
+      setSnackbar({
+        open: true,
+        message: 'Borrador guardado exitosamente.',
+        severity: 'success',
+      });
+      //esperar 2 segundos antes de redirigir
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       router.push("/admin-dashboard");
     } catch (error) {
       console.error("Error al guardar borrador:", error);
-      alert("Hubo un error al guardar el borrador.");
+      setSnackbar({
+        open: true,
+        message: 'Hubo un error al guardar el borrador.',
+        severity: 'error',
+      });
     } finally {
       setLoadingPost(false);
     }
@@ -90,11 +124,27 @@ export default function NewJobForm() {
   }
 
   return (
-    <Box sx={{ padding: 4, maxWidth: 700, mx: "auto" }}>
-      
+    <div style={{ padding: '2rem' }}>
+      {/* 🔙 Botón Atrás */}
+      <Button
+        onClick={() => router.push('/admin-dashboard')}
+        variant="outlined"
+        startIcon={<ArrowBackIcon />}
+        sx={{ mb: 3 }}
+      >
+        Atrás
+      </Button>
+    <Box sx={{ padding: 2, maxWidth: 700, mx: "auto" }}>
       <Typography variant="h6" align="center" fontWeight="bold" mb={3}>
         Crear Nueva Oferta de Trabajo
       </Typography>
+
+      <CustomSnackbar
+        open={snackbar.open}
+        onClose={handleSnackbarClose}
+        message={snackbar.message}
+        severity={snackbar.severity as any}
+      />
 
       <Box
         sx={{
@@ -272,5 +322,8 @@ export default function NewJobForm() {
         </Button>
       </Box>
     </Box>
+    </div>
   );
 }
+
+export default withRoleProtection(NewJobForm, ['admin']);

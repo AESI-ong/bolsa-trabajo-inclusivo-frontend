@@ -15,6 +15,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import api from '../../../../utils/axiosInstance';
 import { useUser } from '../../../../interfaces/UserContext';
+import CustomSnackbar from '../../../../components/CustomSnackbar';
 
 export default function VerPostulantesPorOferta() {
   const { token } = useParams();
@@ -23,6 +24,15 @@ export default function VerPostulantesPorOferta() {
 
   const [applications, setApplications] = useState<any[]>([]);
   const [jobTitle, setJobTitle] = useState('');
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'info',
+  });
+
+  const handleSnackbarClose = () => {
+    setSnackbar(prev => ({ ...prev, open: false }));
+  };
 
   const getFilenameFromUrl = (url: string) => {
     const parts = url.split('/');
@@ -42,9 +52,18 @@ export default function VerPostulantesPorOferta() {
       document.body.appendChild(link);
       link.click();
       link.remove();
+      setSnackbar({
+        open: true,
+        message: 'CV descargado exitosamente.',
+        severity: 'success',
+      });
     } catch (error) {
       console.error('Error al descargar el CV:', error);
-      alert('No se pudo descargar el CV.');
+      setSnackbar({
+        open: true,
+        message: 'No se pudo descargar el CV.',
+        severity: 'error',
+      });
     }
   };
 
@@ -73,7 +92,7 @@ export default function VerPostulantesPorOferta() {
   if (userLoading || !user || user.role !== 'admin') return null;
 
   return (
-    <Box sx={{ padding: 4 }}>
+    <Box sx={{ padding: 4 , minHeight: '80vh'}}>
       {/* 🔙 Botón Atrás */}
       <Button
         onClick={() => router.push('/admin-dashboard')}
@@ -83,6 +102,13 @@ export default function VerPostulantesPorOferta() {
       >
         Atrás
       </Button>
+      
+      <CustomSnackbar
+        open={snackbar.open}
+        onClose={handleSnackbarClose}
+        message={snackbar.message}
+        severity={snackbar.severity as any}
+      />
 
       <Typography variant="h5" align="center" fontWeight="bold" mt={1} mb={3}>
         Panel de administrador

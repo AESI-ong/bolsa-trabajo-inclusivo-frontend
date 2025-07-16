@@ -8,8 +8,9 @@ import ApplicantMenu from "../../components/ApplicantInfo/ApplicantMenu";
 import HeroSection from "../../components/Home/HeroSection";
 import ApplicantProfile from "../../components/ApplicantInfo/ApplicantProfile";
 import MyApplications from "../../components/ApplicantInfo/MyApplications";
+import { withRoleProtection } from "../../utils/withRoleProtection";
 
-export default function ApplicantPage() {
+function ApplicantPage() {
   const router = useRouter();
   const { user, loading } = useUser();
   const [selectedComponent, setSelectedComponent] = useState("profile");
@@ -43,3 +44,4 @@ export default function ApplicantPage() {
     </div>
   );
 }
+export default withRoleProtection(ApplicantPage, ['applicant']);
