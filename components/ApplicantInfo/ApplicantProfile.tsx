@@ -12,6 +12,7 @@ const ApplicantInfo: React.FC = () => {
   const [formData, setFormData] = useState({
     first_name: user?.first_name || '',
     last_name: user?.last_name || '',
+    email: user?.email || '',
     phone_number: user?.applicant_profile?.phone_number || '',
     current_password: '',
     new_password: '',
@@ -44,7 +45,8 @@ const ApplicantInfo: React.FC = () => {
       phone_number: user.applicant_profile?.phone_number || '',
       current_password: '',
       new_password: '',
-      confirm_password: ''
+      confirm_password: '',
+      email: user.email || '',
     });
   };
 
@@ -53,6 +55,7 @@ const ApplicantInfo: React.FC = () => {
       const payload: any = {
         first_name: formData.first_name,
         last_name: formData.last_name,
+        email: formData.email, // <-- NUEVO
         phone_number: formData.phone_number,
       };
 
@@ -67,6 +70,7 @@ const ApplicantInfo: React.FC = () => {
       const applicantRes = await api.get('/applicants/me');
       setUser({
         ...user,
+        email: formData.email, // <-- Actualiza el correo en el contexto
         first_name: formData.first_name,
         last_name: formData.last_name,
         applicant_profile: applicantRes.data,
@@ -180,127 +184,155 @@ const ApplicantInfo: React.FC = () => {
   };
 
   return (
-    <div className="px-30 py-10 p-8">
-      <CustomSnackbar
-        open={snackbar.open}
-        message={snackbar.message}
-        severity={snackbar.severity as any}
-        onClose={handleSnackbarClose}
-      />
-      <div className="bg-white border-2 border-[#2C6CB6] rounded-lg shadow-md w-full p-6">
-        <div className="flex items-center gap-2 mb-2">
-          <img src={'/assets/ApplicantInfo/user_blue.svg'} alt="usuario" className="w-20 h-20" />
-          <h2 className="text-2xl font-bold">
-            {isEditing ? (
-              <>
-                <input
-                  type="text"
-                  name="first_name"
-                  value={formData.first_name}
-                  onChange={handleInputChange}
-                  className="border rounded px-2 py-1"
-                />
-                <input
-                  type="text"
-                  name="last_name"
-                  value={formData.last_name}
-                  onChange={handleInputChange}
-                  className="border rounded px-2 py-1 ml-2"
-                />
-              </>
-            ) : (
-              `${user.first_name} ${user.last_name}`
-            )}
-          </h2>
-        </div>
-
-        <div className="flex items-center space-x-4 mb-4">
-          <p className="text-gray-700 flex items-center">
-            <img src={'/assets/ApplicantInfo/mail.svg'} width={20} height={20} className="mr-2" alt="Email Icon" />
-            {user?.email}
-          </p>
-          <p className="text-gray-700 flex items-center">
-            <img src={'/assets/ApplicantInfo/phone.svg'} width={20} height={20} className="mr-2" alt="telefono" />
-            {isEditing ? (
+  <div className="px-30 py-10 p-8">
+    <CustomSnackbar
+      open={snackbar.open}
+      message={snackbar.message}
+      severity={snackbar.severity as any}
+      onClose={handleSnackbarClose}
+    />
+    <div className="bg-white border-2 border-[#2C6CB6] rounded-lg shadow-md w-full p-6">
+      <div className="flex items-center gap-2 mb-2">
+        <img src={'/assets/ApplicantInfo/user_blue.svg'} alt="usuario" className="w-20 h-20" />
+        <h2 className="text-2xl font-bold">
+          {isEditing ? (
+            <>
               <input
                 type="text"
-                name="phone_number"
-                value={formData.phone_number}
+                name="first_name"
+                value={formData.first_name}
                 onChange={handleInputChange}
-                className="border rounded px-2 py-1"
+                className="border-2 border-gray-300 rounded px-2 py-1"
               />
-            ) : (
-              user.applicant_profile?.phone_number
-            )}
-          </p>
-          <div className="ml-auto">
-            {!isEditing ? (
-              <button className="bg-[#3862af] text-white w-32 py-2 rounded hover:bg-blue-700 transition" onClick={handleEditClick}>
-                Editar
-              </button>
-            ) : (
-              <div className="flex gap-2">
-                <button onClick={handleSaveChanges} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
-                  Guardar
-                </button>
-                <button onClick={handleCancelEdit} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
-                  Cancelar
-                </button>
-              </div>
-            )}
-          </div>
+              <input
+                type="text"
+                name="last_name"
+                value={formData.last_name}
+                onChange={handleInputChange}
+                className="border-2 border-gray-300 rounded px-2 py-1 ml-2"
+              />
+            </>
+          ) : (
+            `${user.first_name} ${user.last_name}`
+          )}
+        </h2>
+      </div>
+
+      <div className="flex items-center space-x-4 mb-4">
+        <div className="text-gray-700 flex items-center">
+          <img src={'/assets/ApplicantInfo/mail.svg'} width={20} height={20} className="mr-2" alt="Email Icon" />
+          {isEditing ? (
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              className="border-2 border-gray-300 rounded px-2 py-1"
+            />
+          ) : (
+            user?.email
+          )}
         </div>
-
-        {isEditing && (
-          <div className="mb-4">
-            <label className="block font-semibold">Contraseña actual</label>
-            <input type="password" name="current_password" value={formData.current_password} onChange={handleInputChange} className="border w-full px-2 py-1 rounded" />
-            <label className="block font-semibold mt-2">Nueva contraseña</label>
-            <input type="password" name="new_password" value={formData.new_password} onChange={handleInputChange} className="border w-full px-2 py-1 rounded" />
-            <label className="block font-semibold mt-2">Confirmar nueva contraseña</label>
-            <input type="password" name="confirm_password" value={formData.confirm_password} onChange={handleInputChange} className="border w-full px-2 py-1 rounded" />
-          </div>
-        )}
-
-        <div className="border-b-2 border-[#2C6CB6] mb-4"></div>
-
-        <h2 className="text-2xl font-bold mb-4">No olvides tu CV</h2>
-
-        {user?.applicant_profile?.cv_url && (
-          <div className="flex justify-center mb-4">
-            <button
-              onClick={handleDownloadCV}
-              className="bg-[#2164B0] text-white px-4 py-2 rounded hover:bg-[#1a4f8c] transition"
-            >
-              Descargar CV
+        <p className="text-gray-700 flex items-center">
+          <img src={'/assets/ApplicantInfo/phone.svg'} width={20} height={20} className="mr-2" alt="telefono" />
+          {isEditing ? (
+            <input
+              type="text"
+              name="phone_number"
+              value={formData.phone_number}
+              onChange={handleInputChange}
+              className="border-2 border-gray-300 rounded px-2 py-1"
+            />
+          ) : (
+            user.applicant_profile?.phone_number
+          )}
+        </p>
+        <div className="ml-auto">
+          {!isEditing ? (
+            <button className="bg-[#3862af] text-white w-32 py-2 rounded hover:bg-blue-700 transition" onClick={handleEditClick}>
+              Editar
             </button>
-          </div>
-        )}
-
-        <div className="mb-4 flex flex-col items-center">
-          <label htmlFor="cvUpload" className="bg-gray-200 px-4 py-2 rounded cursor-pointer hover:bg-gray-300">
-            {selectedFile ? selectedFile.name : 'Seleccionar archivo CV'}
-          </label>
-          <input
-            id="cvUpload"
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={handleFileChange}
-            className="hidden"
-          />
-        </div>
-
-        <div className="flex justify-center">
-          <button
-            onClick={handleUpload}
-            className="bg-[#3862af] text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-          >
-            Subir CV
-          </button>
+          ) : (
+            <div className="flex gap-2">
+              <button onClick={handleSaveChanges} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                Guardar
+              </button>
+              <button onClick={handleCancelEdit} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
+                Cancelar
+              </button>
+            </div>
+          )}
         </div>
       </div>
+
+      {isEditing && (
+        <div className="mb-4">
+          <label className="block font-semibold">Contraseña actual</label>
+          <input
+            type="password"
+            name="current_password"
+            value={formData.current_password}
+            onChange={handleInputChange}
+            className="border-2 border-gray-300 w-full px-2 py-1 rounded mt-1"
+          />
+          <label className="block font-semibold mt-2">Nueva contraseña</label>
+          <input
+            type="password"
+            name="new_password"
+            value={formData.new_password}
+            onChange={handleInputChange}
+            className="border-2 border-gray-300 w-full px-2 py-1 rounded mt-1"
+          />
+          <label className="block font-semibold mt-2">Confirmar nueva contraseña</label>
+          <input
+            type="password"
+            name="confirm_password"
+            value={formData.confirm_password}
+            onChange={handleInputChange}
+            className="border-2 border-gray-300 w-full px-2 py-1 rounded mt-1"
+          />
+        </div>
+      )}
+
+      <div className="border-b-2 border-[#2C6CB6] mb-4"></div>
+
+      <h2 className="text-2xl font-bold mb-4">No olvides tu CV</h2>
+
+      {user?.applicant_profile?.cv_url && (
+        <div className="flex justify-center mb-4">
+          <button
+            onClick={handleDownloadCV}
+            className="bg-[#2164B0] text-white px-4 py-2 rounded hover:bg-[#1a4f8c] transition"
+          >
+            Descargar CV
+          </button>
+        </div>
+      )}
+
+      <div className="mb-4 flex flex-col items-center">
+        <label htmlFor="cvUpload" className="bg-gray-200 px-4 py-2 rounded cursor-pointer hover:bg-gray-300">
+          {selectedFile ? selectedFile.name : 'Seleccionar archivo CV'}
+        </label>
+        <input
+          id="cvUpload"
+          type="file"
+          accept=".pdf,.doc,.docx"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+      </div>
+
+      <div className="flex justify-center">
+        <button
+          onClick={handleUpload}
+          className="bg-[#3862af] text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Subir CV
+        </button>
+      </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default ApplicantInfo;

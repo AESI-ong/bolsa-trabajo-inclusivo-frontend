@@ -1,16 +1,28 @@
 'use client';
 
-import { Box, Typography, Button, Table, TableHead, TableRow, TableCell, TableBody, MenuItem, Select } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import type { Job } from "../../interfaces/Job";
-import api from "../../utils/axiosInstance";
-import { withRoleProtection } from "../../utils/withRoleProtection";
-import { useUser } from "../../interfaces/UserContext";
+import {
+  Box,
+  Typography,
+  Button,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  MenuItem,
+  Select,
+} from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import type { Job } from '../../interfaces/Job';
+import api from '../../utils/axiosInstance';
+import { withRoleProtection } from '../../utils/withRoleProtection';
+import { useUser } from '../../interfaces/UserContext';
 
 function AdminDashboard() {
   const router = useRouter();
   const { user } = useUser();
+
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -18,70 +30,66 @@ function AdminDashboard() {
     api
       .get('/job-offers/')
       .then((res) => setJobs(res.data))
-      .catch((err) => console.error("Error al obtener ofertas de trabajo:", err))
+      .catch((err) => console.error('Error al obtener ofertas:', err))
       .finally(() => setLoading(false));
   }, []);
 
-  const handleStatusChange = async (token: string, newStatus: string) => {
-    const jobToUpdate = jobs.find((job) => job.token === token);
-    if (!jobToUpdate) return;
-
-    const updatedData = {
-      title: jobToUpdate.title,
-      location: jobToUpdate.location,
-      description: jobToUpdate.description,
-      job_type: jobToUpdate.job_type,
-      responsibilities: jobToUpdate.responsibilities,
-      skills: jobToUpdate.skills,
-      sector: jobToUpdate.sector,
-      active: newStatus === "Activo",
-    };
+  const handleStatusChange = async (token: string, newStatus: 'Activo' | 'Inactivo') => {
+    // 1. Optimistic update
+    setJobs((prev) =>
+      prev.map((j) => (j.token === token ? { ...j, active: newStatus === 'Activo' } : j)),
+    );
 
     try {
-      await api.patch(`/job-offers/${token}`, updatedData);
-
-      const updatedJobs = jobs.map((job) =>
-        job.token === token ? { ...job, active: newStatus === "Activo" } : job
-      );
-      setJobs(updatedJobs);
+      await api.patch(`/job-offers/${token}`, {
+        active: newStatus === 'Activo', // 👈 único campo requerido
+      });
     } catch (err) {
-      console.error("Error al actualizar estado:", err);
+      console.error('Error al actualizar estado:', err);
+      // 2. Revertir si falla
+      setJobs((prev) =>
+        prev.map((j) => (j.token === token ? { ...j, active: newStatus !== 'Activo' } : j)),
+      );
+      alert('No se pudo actualizar el estado. Intenta de nuevo.');
     }
   };
 
+  if (loading) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <Typography align="center">Cargando ofertas…</Typography>
+      </Box>
+    );
+  }
+
   return (
-    <Box sx={{ padding: 4 }}>
-      <Typography variant="h5" align="center" fontWeight="bold" mt={4} mb={3}>
+    <Box sx={{ p: 4 }}>
+      <Typography variant="h5" align="center" fontWeight="bold" mb={3}>
         Panel de administrador
       </Typography>
 
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-        <Typography sx={{ color: "#1e56a0", fontWeight: "bold" }}>
-          Ofertas de Trabajo
-        </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <Typography sx={{ color: '#1e56a0', fontWeight: 'bold' }}>Ofertas de Trabajo</Typography>
         <Button
-          sx={{ color: "#c62828", fontWeight: "bold" }}
-          onClick={() => router.push("/admin-dashboard/nueva-oferta")}
+          sx={{ color: '#c62828', fontWeight: 'bold' }}
+          onClick={() => router.push('/admin-dashboard/nueva-oferta')}
         >
           + Nueva Oferta
         </Button>
       </Box>
 
-      <Table sx={{ border: "1px solid #1e56a0" }}>
+      <Table sx={{ border: '1px solid #1e56a0' }}>
         <TableHead>
-          <TableRow sx={{ backgroundColor: "#1e56a0" }}>
-            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Título</TableCell>
-            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Fecha</TableCell>
-            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Estado</TableCell>
-            <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Ver postulantes</TableCell>
+          <TableRow sx={{ backgroundColor: '#1e56a0' }}>
+            <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Título</TableCell>
+            <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Fecha</TableCell>
+            <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Estado</TableCell>
+            <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Ver postulantes</TableCell>
           </TableRow>
         </TableHead>
+
         <TableBody>
-          {loading ? (
-            <TableRow>
-              <TableCell colSpan={4}>Cargando...</TableCell>
-            </TableRow>
-          ) : jobs.length === 0 ? (
+          {jobs.length === 0 ? (
             <TableRow>
               <TableCell colSpan={4}>No hay ofertas disponibles</TableCell>
             </TableRow>
@@ -89,13 +97,17 @@ function AdminDashboard() {
             jobs.map((job) => (
               <TableRow key={job.id}>
                 <TableCell>{job.title}</TableCell>
-                <TableCell>{new Date(job.created_at).toLocaleDateString("es-PE")}</TableCell>
+                <TableCell>
+                  {new Date(job.created_at).toLocaleDateString('es-PE')}
+                </TableCell>
                 <TableCell>
                   <Select
-                    value={job.active ? "Activo" : "Inactivo"}
-                    onChange={(e) => handleStatusChange(job.token, e.target.value)}
                     size="small"
-                    sx={{ backgroundColor: "#e3f2fd", minWidth: 100 }}
+                    sx={{ backgroundColor: '#e3f2fd', minWidth: 100 }}
+                    value={job.active ? 'Activo' : 'Inactivo'}
+                    onChange={(e) =>
+                      handleStatusChange(job.token, e.target.value as 'Activo' | 'Inactivo')
+                    }
                   >
                     <MenuItem value="Activo">Activo</MenuItem>
                     <MenuItem value="Inactivo">Inactivo</MenuItem>
@@ -104,11 +116,13 @@ function AdminDashboard() {
                 <TableCell>
                   <Button
                     variant="text"
-                    sx={{ color: "#1e56a0", fontWeight: "bold", textTransform: "none" }}
+                    sx={{ color: '#1e56a0', fontWeight: 'bold', textTransform: 'none' }}
                     disabled={!job.total_applicants}
-                    onClick={() => router.push(`/admin-dashboard/ver-postulantes/${job.token}`)}
+                    onClick={() =>
+                      router.push(`/admin-dashboard/ver-postulantes/${job.token}`)
+                    }
                   >
-                    {job.total_applicants ?? "0"}
+                    {job.total_applicants ?? '0'}
                   </Button>
                 </TableCell>
               </TableRow>
