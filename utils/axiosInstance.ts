@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   withCredentials: true, // 🔥 Necesario para que se mande la cookie (refresh_token)
 });
 
@@ -17,26 +17,23 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-export default api;
-
+// Interceptor para refrescar el token
 api.interceptors.response.use(
   response => response,
   async (error) => {
     const originalRequest = error.config;
-
-    // Si el error fue 401 y no estamos intentando ya renovar...
     const token = localStorage.getItem('access_token');
 
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      token // ← ✅ Solo intenta refresh si hay access_token
+      token
     ) {
       originalRequest._retry = true;
 
       try {
         const refreshResponse = await axios.post(
-          'http://localhost:8000/api/refresh-token',
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/refresh-token`,
           {},
           { withCredentials: true }
         );
@@ -44,7 +41,6 @@ api.interceptors.response.use(
         const newAccessToken = refreshResponse.data.access_token;
         localStorage.setItem('access_token', newAccessToken);
 
-        // Reintentar la petición original con el nuevo token
         originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
@@ -56,3 +52,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export default api;
