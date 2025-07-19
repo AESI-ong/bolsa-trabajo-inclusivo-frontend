@@ -10,7 +10,7 @@ const socials = {
 const Footer = () => {
   return (
     <footer className="bg-white text-black border-t-2 border-gray-400">
-      {/* Colores */}
+      {/* Colores 1 */}
       <div className="grid grid-cols-4">
         <div className="py-1 bg-rojo-aesi"></div>
         <div className="py-1 bg-amarillo-aesi"></div>

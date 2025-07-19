@@ -15,7 +15,7 @@ function ApplicantPage() {
   const { user, loading } = useUser();
   const [selectedComponent, setSelectedComponent] = useState("profile");
 
-  // 🔒 Redirigir si no está logueado o si no es applicant
+  // Redirigir si no está logueado o si no es applicant
   useEffect(() => {
     if (!loading) {
       if (!user || user?.role !== "applicant") {
