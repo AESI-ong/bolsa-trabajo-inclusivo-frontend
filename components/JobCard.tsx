@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import type { Job } from "../interfaces/Job";
+import type { Application } from "../interfaces/Application";
 import { useEffect, useState } from "react";
 import api from "../utils/axiosInstance";
 
@@ -25,9 +26,9 @@ const JobCard = ({ job, isDetail = false }: Props) => {
         const checkIfApplied = async () => {
           try {
             const res = await api.get('/applicants/applications');
-            const applications = res.data;
+            const applications: Application[] = res.data;
             const alreadyApplied = applications.some(
-              (app: any) => app.job_offer.token === job.token
+              (app) => app.job_offer.token === job.token
             );
             setHasApplied(alreadyApplied);
           } catch (error) {

@@ -52,10 +52,18 @@ const ApplicantInfo: React.FC = () => {
 
   const handleSaveChanges = async () => {
     try {
-      const payload: any = {
+      const payload: {
+        first_name: string;
+        last_name: string;
+        email: string;
+        phone_number: string;
+        current_password?: string;
+        new_password?: string;
+        confirm_password?: string;
+      } = {
         first_name: formData.first_name,
         last_name: formData.last_name,
-        email: formData.email, // <-- NUEVO
+        email: formData.email,
         phone_number: formData.phone_number,
       };
 
@@ -173,8 +181,19 @@ const ApplicantInfo: React.FC = () => {
         severity: 'success',
       });
     } catch (error) {
-      console.error('Error al descargar el CV:', error);
-      console.error('Error details:', error.response ? error.response.data : error);
+        console.error('Error al descargar el CV:', error);
+        // Type guard para error de Axios
+        if (
+          typeof error === 'object' &&
+          error !== null &&
+          'response' in error &&
+          typeof (error as { response?: unknown }).response === 'object'
+        ) {
+          const response = (error as { response?: { data?: unknown } }).response;
+          console.error('Error details:', response?.data ?? error);
+        } else {
+          console.error('Error details:', error);
+        }
       setSnackbar({
         open: true,
         message: 'Error al descargar el CV.',
@@ -188,7 +207,7 @@ const ApplicantInfo: React.FC = () => {
     <CustomSnackbar
       open={snackbar.open}
       message={snackbar.message}
-      severity={snackbar.severity as any}
+  severity={snackbar.severity as 'success' | 'error' | 'warning' | 'info'}
       onClose={handleSnackbarClose}
     />
     <div className="bg-white border-2 border-[#2C6CB6] rounded-lg shadow-md w-full p-6">

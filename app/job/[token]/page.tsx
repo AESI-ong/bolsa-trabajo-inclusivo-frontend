@@ -20,7 +20,7 @@ export default function JobDetailPage() {
       try {
         const response = await api.get(`/job-offers/${token}`);
         setJob(response.data);
-      } catch (err) {
+      } catch {
         setError(true);
       }
     };

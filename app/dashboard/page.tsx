@@ -22,7 +22,7 @@ function ApplicantPage() {
         router.push("/login"); // o una página de error como "/not-authorized"
       }
     }
-  }, [user, loading]);
+  }, [user, loading, router]);
 
   const renderComponent = () => {
     switch (selectedComponent) {
@@ -44,4 +44,5 @@ function ApplicantPage() {
     </div>
   );
 }
-export default withRoleProtection(ApplicantPage, ['applicant']);
+const ProtectedApplicantPage = withRoleProtection(ApplicantPage, ['applicant']);
+export default ProtectedApplicantPage;

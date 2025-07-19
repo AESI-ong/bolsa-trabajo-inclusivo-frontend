@@ -20,7 +20,6 @@ export default function RegisterPage() {
     phone_number: ''
   });
   const [errors, setErrors] = useState({ first_name: '', last_name: '', email: '', password: '', confirm_password: '', phone_number: '' });
-  const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -53,7 +52,6 @@ export default function RegisterPage() {
   
     if (Object.values(newErrors).some((error) => error !== '')) return;
 
-    setLoading(true);
 
     if (formData.password !== formData.confirm_password) {
       setSnackbar({
@@ -79,8 +77,6 @@ export default function RegisterPage() {
         message: 'Error al registrar. Por favor, inténtalo de nuevo.',
         severity: 'error',
       });
-    }finally {
-    setLoading(false);
   }
   };
 
@@ -95,7 +91,7 @@ export default function RegisterPage() {
         open={snackbar.open}
         onClose={handleSnackbarClose}
         message={snackbar.message}
-        severity={snackbar.severity as any}
+        severity={snackbar.severity as 'success' | 'error' | 'warning' | 'info'}
       />
 
       <form className="p-20" onSubmit={handleSubmit}>

@@ -28,7 +28,7 @@ function ApplyPage() {
     if (!loading && !user) {
       router.push('/login');
     }
-  }, [loading, user]);
+  }, [loading, user, router]);
 
   // Obtener detalles del trabajo
   useEffect(() => {
@@ -62,11 +62,19 @@ function ApplyPage() {
       // esperar 1 segundo antes de redirigir
       await new Promise(resolve => setTimeout(resolve, 2000));
       router.push('/');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
+      // Type guard para error de Axios
+      interface AxiosError {
+        response?: {
+          status?: number;
+          data?: { message?: string };
+        };
+      }
+      const error = err as AxiosError;
       setSnackbar({
         open: true,
-        message: 'Error al postular. Intenta nuevamente.',
+        message: error?.response?.data?.message || 'Error al postular. Intenta nuevamente.',
         severity: 'error',
       });
     } finally {
@@ -82,7 +90,7 @@ function ApplyPage() {
       <CustomSnackbar
         open={snackbar.open}
         message={snackbar.message}
-        severity={snackbar.severity as any}
+        severity={snackbar.severity as 'success' | 'error' | 'warning' | 'info'}
         onClose={handleSnackbarClose}
       />
     <div className="max-w-2xl mx-auto p-6 bg-white rounded shadow ">
@@ -104,4 +112,5 @@ function ApplyPage() {
   );
 }
 
-export default withRoleProtection(ApplyPage, ['applicant']);
+const ProtectedApplyPage = withRoleProtection(ApplyPage, ['applicant']);
+export default ProtectedApplyPage;

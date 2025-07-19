@@ -17,11 +17,9 @@ import { useRouter } from 'next/navigation';
 import type { Job } from '../../interfaces/Job';
 import api from '../../utils/axiosInstance';
 import { withRoleProtection } from '../../utils/withRoleProtection';
-import { useUser } from '../../interfaces/UserContext';
 
 function AdminDashboard() {
   const router = useRouter();
-  const { user } = useUser();
 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
@@ -134,4 +132,5 @@ function AdminDashboard() {
   );
 }
 
-export default withRoleProtection(AdminDashboard, ['admin']);
+const ProtectedAdminDashboard = withRoleProtection(AdminDashboard, ['admin']);
+export default ProtectedAdminDashboard;

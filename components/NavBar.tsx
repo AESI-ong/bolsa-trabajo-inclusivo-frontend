@@ -71,7 +71,7 @@ export default function NavBar() {
       <CustomSnackbar
         open={snackbar.open}
         message={snackbar.message}
-        severity={snackbar.severity as any}
+        severity={snackbar.severity as 'success' | 'error' | 'warning' | 'info'}
         onClose={handleSnackbarClose}
       />
       <Toolbar sx={{ justifyContent: 'space-between' }}>

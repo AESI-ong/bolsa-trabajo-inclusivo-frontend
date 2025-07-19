@@ -16,13 +16,14 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import api from '../../../../utils/axiosInstance';
 import { useUser } from '../../../../interfaces/UserContext';
 import CustomSnackbar from '../../../../components/CustomSnackbar';
+import type { Application } from '../../../../interfaces/Application';
 
 export default function VerPostulantesPorOferta() {
   const { token } = useParams();
   const router = useRouter();
   const { user, loading: userLoading } = useUser();
 
-  const [applications, setApplications] = useState<any[]>([]);
+  const [applications, setApplications] = useState<Application[]>([]);
   const [jobTitle, setJobTitle] = useState('');
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -71,7 +72,7 @@ export default function VerPostulantesPorOferta() {
     if (!userLoading && (!user || user.role !== 'admin')) {
       router.push('/login');
     }
-  }, [user, userLoading]);
+  }, [user, userLoading, router]);
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -107,7 +108,7 @@ export default function VerPostulantesPorOferta() {
         open={snackbar.open}
         onClose={handleSnackbarClose}
         message={snackbar.message}
-        severity={snackbar.severity as any}
+        severity={snackbar.severity as 'success' | 'error' | 'warning' | 'info'}
       />
 
       <Typography variant="h5" align="center" fontWeight="bold" mt={1} mb={3}>

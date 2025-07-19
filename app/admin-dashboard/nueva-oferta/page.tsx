@@ -3,20 +3,21 @@
 import {
   Box,
   Button,
+  IconButton,
+  MenuItem,
+  Select,
   TextField,
   Typography,
-  IconButton,
-  Select,
-  MenuItem,
 } from "@mui/material";
+import { useEffect, useState } from "react";
+
 import AddIcon from "@mui/icons-material/Add";
-import { useState, useEffect } from "react";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import CustomSnackbar from '../../../components/CustomSnackbar';
+import api from "../../../utils/axiosInstance";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../../interfaces/UserContext";
-import api from "../../../utils/axiosInstance";
-import CustomSnackbar from '../../../components/CustomSnackbar';
 import { withRoleProtection } from "../../../utils/withRoleProtection";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function NewJobForm() {
   const router = useRouter();
@@ -33,7 +34,7 @@ function NewJobForm() {
     active: true,
   });
 
-  const [loadingPost, setLoadingPost] = useState(false);
+  //const [loadingPost, setLoadingPost] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -72,7 +73,6 @@ function NewJobForm() {
   };
 
   const publishOffer = async () => {
-    setLoadingPost(true);
     try {
       await api.post("/job-offers/", job);
       setSnackbar({
@@ -90,13 +90,10 @@ function NewJobForm() {
         message: 'Hubo un error al crear la oferta.',
         severity: 'error',
       });
-    } finally {
-      setLoadingPost(false);
     }
   };
   //Guardar borrador es igual que publicar, pero el campo "active" se pone a false
   const saveDraft = async () => {
-    setLoadingPost(true);
     try {
       await api.post("/job-offers/", { ...job, active: false });
       setSnackbar({
@@ -114,8 +111,6 @@ function NewJobForm() {
         message: 'Hubo un error al guardar el borrador.',
         severity: 'error',
       });
-    } finally {
-      setLoadingPost(false);
     }
   };
 
@@ -143,7 +138,7 @@ function NewJobForm() {
         open={snackbar.open}
         onClose={handleSnackbarClose}
         message={snackbar.message}
-        severity={snackbar.severity as any}
+        severity={snackbar.severity as 'success' | 'error' | 'warning' | 'info'}
       />
 
       <Box
@@ -326,4 +321,5 @@ function NewJobForm() {
   );
 }
 
-export default withRoleProtection(NewJobForm, ['admin']);
+const ProtectedNewJobForm = withRoleProtection(NewJobForm, ['admin']);
+export default ProtectedNewJobForm;

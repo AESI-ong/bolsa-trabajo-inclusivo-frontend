@@ -1,4 +1,11 @@
+// Tipo auxiliar para errores de Axios
 'use client';
+interface AxiosError {
+  response?: {
+    status?: number;
+    data?: { message?: string };
+  };
+}
 
 import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
@@ -17,7 +24,6 @@ const { refreshUser } = useUser(); // ✅ Obtenemos refreshUser del contexto
 const [showPassword, setShowPassword] = useState(false);
 const [errors, setErrors] = useState({ email: '', password: '' });
 const [credentials, setCredentials] = useState({ email: '', password: '' });
-const [loading, setLoading] = useState(false);
 
 const [snackbar, setSnackbar] = useState({
   open: false,
@@ -43,7 +49,7 @@ useEffect(() => {
       router.replace('/login');
     }
   }
-}, []);
+}, [router]);
 
 const handleClickShowPassword = () => setShowPassword((prev) => !prev);
 
@@ -62,7 +68,6 @@ const handleSubmit = async (e: React.FormEvent) => {
 
   if (Object.values(newErrors).some((error) => error !== '')) return;
 
-  setLoading(true);
 
   try {
     const res = await api.post('/login', credentials);
@@ -82,21 +87,29 @@ const handleSubmit = async (e: React.FormEvent) => {
       if (role === 'admin') router.push('/admin-dashboard');
       else if (role === 'applicant') router.push('/');
     }, 500); // espera breve para que se vea el mensaje
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error al iniciar sesión:', error);
-
-    if (error.response?.status === 401) {
-      setSnackbar({
-        open: true,
-        message: 'El correo o la contraseña son incorrectos.',
-        severity: 'error',
-      });
-    } else if (error.response?.data?.message) {
-      setSnackbar({
-        open: true,
-        message: error.response.data.message,
-        severity: 'error',
-      });
+    const err = error as AxiosError;
+    if (err.response) {
+      if (err.response.status === 401) {
+        setSnackbar({
+          open: true,
+          message: 'El correo o la contraseña son incorrectos.',
+          severity: 'error',
+        });
+      } else if (err.response.data?.message) {
+        setSnackbar({
+          open: true,
+          message: err.response.data.message,
+          severity: 'error',
+        });
+      } else {
+        setSnackbar({
+          open: true,
+          message: 'Error al iniciar sesión. Por favor, inténtalo de nuevo.',
+          severity: 'error',
+        });
+      }
     } else {
       setSnackbar({
         open: true,
@@ -105,7 +118,7 @@ const handleSubmit = async (e: React.FormEvent) => {
       });
     }
   } finally {
-    setLoading(false);
+    // loading eliminado
   }
 };
 
@@ -115,7 +128,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         open={snackbar.open}
         onClose={handleSnackbarClose}
         message={snackbar.message}
-        severity={snackbar.severity as any}
+        severity={snackbar.severity as 'success' | 'error' | 'warning' | 'info'}
       />
       <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">Inicio de sesión</h2>
       <p className="text-3xl text-center">Te damos la bienvenida a AESI</p>
