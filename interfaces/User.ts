@@ -6,6 +6,6 @@ email: string;
 token: string;
 role: string;
 active: boolean;
-created_at: string; // ISO 8601 date string
-updated_at: string; // ISO 8601 date string
+created_at: string; 
+updated_at: string; 
 };
