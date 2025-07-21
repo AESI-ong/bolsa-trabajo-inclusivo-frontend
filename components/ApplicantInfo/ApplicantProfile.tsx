@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useUser } from '../../interfaces/UserContext';
-import api from '../../utils/axiosInstance';
+
 import CustomSnackbar from '../../components/CustomSnackbar';
+import api from '../../utils/axiosInstance';
+import { useUser } from '../../interfaces/UserContext';
 
 const ApplicantInfo: React.FC = () => {
   const { user, setUser } = useUser();
@@ -73,9 +74,9 @@ const ApplicantInfo: React.FC = () => {
         payload.confirm_password = formData.confirm_password;
       }
 
-      await api.patch('/applicants/me', payload);
+      await api.patch('/applicants/me/', payload);
 
-      const applicantRes = await api.get('/applicants/me');
+      const applicantRes = await api.get('/applicants/me/');
       setUser({
         ...user,
         email: formData.email, // <-- Actualiza el correo en el contexto
@@ -130,13 +131,13 @@ const ApplicantInfo: React.FC = () => {
     formData.append('cv_file', selectedFile);
 
     try {
-      await api.post(`/applicants/me/cv`, formData, {
+      await api.post(`/applicants/me/cv/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
-      const applicantRes = await api.get('/applicants/me');
+      const applicantRes = await api.get('/applicants/me/');
 
       if (user) {
         setUser({
@@ -164,7 +165,7 @@ const ApplicantInfo: React.FC = () => {
   const handleDownloadCV = async () => {
     try {
       const filename = user.applicant_profile.cv_url?.split('/').pop(); // Extrae solo el nombre del archivo
-      const res = await api.get(`/applicants/cv/download/${filename}`, {
+      const res = await api.get(`/applicants/cv/download/${filename}/`, {
         responseType: 'blob'
       });
 

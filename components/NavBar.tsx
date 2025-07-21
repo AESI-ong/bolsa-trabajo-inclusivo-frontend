@@ -1,22 +1,23 @@
 'use client';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import {
   AppBar,
-  Toolbar,
-  Typography,
-  Button,
   Box,
+  Button,
+  IconButton,
   Menu,
   MenuItem,
-  IconButton,
+  Toolbar,
+  Typography,
 } from '@mui/material';
+
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import { useUser } from '../interfaces/UserContext';
-import api from '../utils/axiosInstance';
 import CustomSnackbar from './CustomSnackbar'; // Asegúrate de que la ruta sea correcta
+import Link from 'next/link';
+import api from '../utils/axiosInstance';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useUser } from '../interfaces/UserContext';
 
 export default function NavBar() {
   const router = useRouter();
@@ -44,7 +45,7 @@ export default function NavBar() {
 
   const handleLogout = async () => {
     try {
-      await api.post('/logout');
+      await api.post('/logout/');
       localStorage.removeItem('access_token');
       localStorage.removeItem('user'); // Limpia también por si acaso
       setUser(null);

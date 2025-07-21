@@ -1,13 +1,14 @@
 // app/page.tsx o donde esté tu HomePage
 'use client';
 
-import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import HeroSection from '../components/Home/HeroSection';
-import JobListSection from '../components/Home/JobListSection';
+
 import CategoriesSection from '../components/Home/CategoriesSection';
+import HeroSection from '../components/Home/HeroSection';
 import type { Job } from '../interfaces/Job';
+import JobListSection from '../components/Home/JobListSection';
 import api from '../utils/axiosInstance';
+import { useSearchParams } from 'next/navigation';
 import withRoleRedirect from '../utils/withRoleRedirect'; // ✅ importa el wrapper
 
 function HomePage() {
@@ -18,7 +19,7 @@ function HomePage() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await api.get('/job-offers');
+        const res = await api.get('/job-offers/');
         const allJobs: Job[] = res.data;
 
         const title = searchParams.get('title')?.toLowerCase() || '';

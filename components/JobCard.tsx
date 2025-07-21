@@ -1,10 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import type { Job } from "../interfaces/Job";
-import type { Application } from "../interfaces/Application";
 import { useEffect, useState } from "react";
+
+import type { Application } from "../interfaces/Application";
+import type { Job } from "../interfaces/Job";
 import api from "../utils/axiosInstance";
+import { useRouter } from 'next/navigation';
 
 type Props = {
   job: Job;
@@ -25,7 +26,7 @@ const JobCard = ({ job, isDetail = false }: Props) => {
       if (isDetail) {
         const checkIfApplied = async () => {
           try {
-            const res = await api.get('/applicants/applications');
+            const res = await api.get('/applicants/applications/');
             const applications: Application[] = res.data;
             const alreadyApplied = applications.some(
               (app) => app.job_offer.token === job.token
@@ -46,7 +47,7 @@ const JobCard = ({ job, isDetail = false }: Props) => {
       if (!isLoggedIn) {
         router.push('/login');
       } else if (!hasApplied) {
-        router.push(`/job/${job.token}/apply`);
+        router.push(`/job/${job.token}/apply/`);
       }
     } else {
       router.push(`/job/${job.token}`);

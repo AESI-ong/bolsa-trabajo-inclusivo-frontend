@@ -5,8 +5,6 @@ const api = axios.create({
   withCredentials: true, // 🔥 Necesario para que se mande la cookie (refresh_token)
 });
 
-console.log('Axios instance creada con baseURL:', process.env.NEXT_PUBLIC_API_BASE_URL);
-
 // Interceptor para incluir el access_token en cada request
 api.interceptors.request.use(
   (config) => {
@@ -35,7 +33,7 @@ api.interceptors.response.use(
 
       try {
         const refreshResponse = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/refresh-token`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/refresh-token/`,
           {},
           { withCredentials: true }
         );
