@@ -1,10 +1,12 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import type { Job } from "../interfaces/Job";
-import type { Application } from "../interfaces/Application";
 import { useEffect, useState } from "react";
+
+import type { Application } from "../interfaces/Application";
+import { Briefcase } from "lucide-react";
+import type { Job } from "../interfaces/Job";
 import api from "../utils/axiosInstance";
+import { useRouter } from "next/navigation";
 
 type Props = {
   job: Job;
@@ -17,7 +19,7 @@ const JobCard = ({ job, isDetail = false }: Props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem("access_token");
     if (token) {
       setIsLoggedIn(true);
 
@@ -25,14 +27,14 @@ const JobCard = ({ job, isDetail = false }: Props) => {
       if (isDetail) {
         const checkIfApplied = async () => {
           try {
-            const res = await api.get('/applicants/applications');
+            const res = await api.get("/applicants/applications");
             const applications: Application[] = res.data;
             const alreadyApplied = applications.some(
               (app) => app.job_offer.token === job.token
             );
             setHasApplied(alreadyApplied);
           } catch (error) {
-            console.error('Error verificando si ya se postuló:', error);
+            console.error("Error verificando si ya se postuló:", error);
           }
         };
 
@@ -44,7 +46,7 @@ const JobCard = ({ job, isDetail = false }: Props) => {
   const handleClick = () => {
     if (isDetail) {
       if (!isLoggedIn) {
-        router.push('/login');
+        router.push("/login");
       } else if (!hasApplied) {
         router.push(`/job/${job.token}/apply`);
       }
@@ -54,33 +56,55 @@ const JobCard = ({ job, isDetail = false }: Props) => {
   };
 
   const renderButtonText = () => {
-    if (!isDetail) return 'Detalles del Trabajo';
-    if (!isLoggedIn) return 'Inicia sesión para postular';
-    if (hasApplied) return 'Ya te postulaste';
-    return 'Postular a la oferta';
+    if (!isDetail) return "Detalles del Trabajo";
+    if (!isLoggedIn) return "Inicia sesión para postular";
+    if (hasApplied) return "Ya te postulaste";
+    return "Postular a la oferta";
   };
 
   return (
-    <div className="bg-white p-6 rounded border flex justify-between items-center min-h-[160px] border-[#3862af]">
-      <div>
-        <div className="flex items-center gap-2 mb-2">
-          <img src="/assets/Home/persona.png" alt="Trabajo" className="w-20 h-20" />
-          <h3 className="text-2xl font-bold">{job.title}</h3>
+    <div className="bg-white p-6 rounded-xl border-2 flex flex-col md:flex-row justify-between items-start md:items-center min-h-[160px] border-[#2C6DB6] shadow-sm hover:shadow-md transition-shadow duration-200">
+      <div className="flex flex-col gap-2 w-full">
+        <div className="flex items-center gap-4 mb-1">
+          <div className="bg-blue-100 rounded-full p-3 flex items-center justify-center">
+            <Briefcase className="text-[#2C6DB6]" size={40} />
+            {/* <img
+              src="/assets/Home/persona.png"
+              alt="Trabajo"
+              className="w-8 h-8"
+              loading="lazy"
+            /> */}
+          </div>
+          <div>
+            <h3 className="text-xl md:text-2xl font-bold text-gray-900">
+              {job.title}
+            </h3>
+          </div>
         </div>
-
-        <div className="flex gap-3 text-sm items-center flex-wrap">
-          <img src="/assets/Home/clock.png" alt="Tiempo" className="w-4 h-4" />
-          <span>{job.job_type === "part_time" ? "Medio tiempo" : "Tiempo completo"}</span>
-          <img src="/assets/Home/map-pin.png" alt="Ubicación" className="w-4 h-4" />
-          <span>{job.location}</span>
+        <div className="flex gap-4 text-sm items-center flex-wrap text-gray-600 mb-2">
+          <span className="flex items-center gap-1">
+            <img
+              src="/assets/Home/clock.png"
+              alt="Tiempo"
+              className="w-4 h-4"
+            />
+            {job.job_type === "part_time" ? "Medio tiempo" : "Tiempo completo"}
+          </span>
+          <span className="flex items-center gap-1">
+            <img
+              src="/assets/Home/map-pin.png"
+              alt="Ubicación"
+              className="w-4 h-4"
+            />
+            {job.location}
+          </span>
         </div>
       </div>
-
       <button
-        className={`px-4 py-2 rounded transition ${
+        className={`mt-4 md:mt-0 px-6 py-2 rounded-lg font-semibold shadow-sm transition whitespace-nowrap ${
           hasApplied
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-[#3862af] text-white hover:bg-blue-700"
+            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+            : "bg-[#2C6DB6] text-white hover:bg-[#1E4B8C]"
         }`}
         onClick={handleClick}
         disabled={hasApplied}
@@ -92,8 +116,3 @@ const JobCard = ({ job, isDetail = false }: Props) => {
 };
 
 export default JobCard;
-
-
-
-
-

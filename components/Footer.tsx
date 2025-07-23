@@ -2,27 +2,30 @@ import { Instagram, LinkedIn, MusicNote, YouTube } from "@mui/icons-material";
 
 const socials = {
   instagram: { icon: Instagram, url: "https://www.instagram.com/aesi.ong/" },
-  linkedin: { icon: LinkedIn, url: "https://www.linkedin.com/company/aesiong/" },
+  linkedin: {
+    icon: LinkedIn,
+    url: "https://www.linkedin.com/company/aesiong/",
+  },
   tiktok: { icon: MusicNote, url: "https://www.tiktok.com/@aesiong" },
   youtube: { icon: YouTube, url: "https://www.youtube.com/@AESI-ONG" },
 };
 
 const Footer = () => {
   return (
-    <footer className="bg-white text-black border-t-2 border-gray-400">
-      {/* Colores 1 */}
-      <div className="grid grid-cols-4">
-        <div className="py-1 bg-rojo-aesi"></div>
-        <div className="py-1 bg-amarillo-aesi"></div>
-        <div className="py-1 bg-azul-aesi"></div>
-        <div className="py-1 bg-verde-aesi"></div>
+    <footer className="bg-white text-black">
+      {/* Línea superior de 4 colores */}
+      <div className="w-full flex">
+        <div className="flex-1 h-2 bg-rojo-aesi" />
+        <div className="flex-1 h-2 bg-amarillo-aesi" />
+        <div className="flex-1 h-2 bg-azul-aesi" />
+        <div className="flex-1 h-2 bg-verde-aesi" />
       </div>
 
-      {/* Contenido */}
-      <div className="mx-auto p-12 grid grid-cols-11 ">
+      {/* Contenido responsive */}
+      <div className="max-w-7xl mx-auto px-5 py-10 flex flex-col gap-10 md:gap-0 md:grid md:grid-cols-12 md:py-16">
         {/* Logo y derechos */}
-        <div className="mx-0 flex flex-col max-w-56 text-center col-span-3">
-          <div className="relative w-full aspect-[1.37] mb-2 md:mb-4">
+        <div className="flex flex-col items-center md:items-start md:col-span-3 mb-2 md:mb-0">
+          <div className="w-32 h-auto mb-2 md:mb-4">
             <img
               src="/aesi-logo.svg"
               alt="AESI logo"
@@ -30,45 +33,75 @@ const Footer = () => {
               loading="lazy"
             />
           </div>
-          <p className="text-[0.565rem] lg:text-base">
+          <p className="text-xs md:text-sm text-center md:text-left">
             © {new Date().getFullYear()} - Todos los derechos reservados AESI
           </p>
         </div>
 
         {/* Secciones */}
-        <div className="col-span-2 text-left w-full">
-          <h2 className="font-semibold text-2xl mb-4">Secciones</h2>
-          <div className="text-lg space-y-4">
-            <p>Inicio</p>
-            <p>Nosotros</p>
-            <p>Contáctanos</p>
-          </div>
-        </div>
+        <nav
+          className="md:col-span-2 flex flex-col items-center md:items-start mb-2 md:mb-0"
+          aria-label="Secciones"
+        >
+          <h2 className="font-semibold text-xl md:text-2xl mb-3 md:mb-4">
+            Secciones
+          </h2>
+          <ul className="text-base md:text-lg space-y-2 md:space-y-4">
+            <li>
+              <a href="#" className="hover:underline">
+                Inicio
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:underline">
+                Nosotros
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:underline">
+                Contáctanos
+              </a>
+            </li>
+          </ul>
+        </nav>
 
         {/* Contacto */}
-        <div className="col-span-3 text-left w-full">
-          <h2 className="font-semibold text-2xl mb-4">Contáctanos</h2>
-          <div className="text-lg space-y-4">
-            <p>soytalento@aesiong.org</p>
-            <p>(+51) 967 972 857</p>
-          </div>
-        </div>
+        <address className="not-italic md:col-span-3 flex flex-col items-center md:items-start mb-2 md:mb-0">
+          <h2 className="font-semibold text-xl md:text-2xl mb-3 md:mb-4">
+            Contáctanos
+          </h2>
+          <ul className="text-base md:text-lg space-y-2 md:space-y-4">
+            <li>
+              <a
+                href="mailto:soytalento@aesiong.org"
+                className="hover:underline"
+              >
+                soytalento@aesiong.org
+              </a>
+            </li>
+            <li>
+              <a href="tel:+51967972857" className="hover:underline">
+                (+51) 967 972 857
+              </a>
+            </li>
+          </ul>
+        </address>
 
         {/* Noticias + Redes */}
-        <div className="col-span-3 pl-4">
-          <h2 className="font-semibold text-2xl mb-2 text-left">
+        <div className="md:col-span-4 flex flex-col items-center md:items-start">
+          <h2 className="font-semibold text-xl md:text-2xl mb-4 md:mb-2 text-left w-full">
             Recibe noticias de AESI
           </h2>
-          <div className="flex mb-8">
-            <button className="cursor-pointer bg-red-600 text-white px-10 py-2 font-medium transition-colors shadow-lg rounded-xl">
+          <div className="flex mb-6 w-full justify-center md:justify-start">
+            <button className="cursor-pointer bg-red-600 text-white px-8 py-2 font-medium transition-colors shadow-lg rounded-xl text-base md:text-lg">
               Suscríbete
             </button>
           </div>
 
-          <h2 className="font-semibold text-2xl text-left mb-6">
+          <h2 className="font-semibold text-xl md:text-2xl text-left mb-4 w-full">
             Síguenos
           </h2>
-          <div className="flex space-x-8 justify-start">
+          <div className="flex space-x-6 md:space-x-8 justify-center md:justify-start w-full">
             {["linkedin", "instagram", "tiktok", "youtube"].map((social) => {
               const { url, icon } = socials[social as keyof typeof socials];
               const Icon = icon;
@@ -78,9 +111,9 @@ const Footer = () => {
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-14 h-14 bg-red-100 text-rojo-aesi rounded-full flex items-center justify-center hover:bg-red-200"
+                  className="w-12 h-12 md:w-14 md:h-14 bg-red-100 text-rojo-aesi rounded-full flex items-center justify-center hover:bg-red-200"
                 >
-                  <Icon style={{ fontSize: "1.75rem" }} />
+                  <Icon style={{ fontSize: "1.5rem" }} />
                 </a>
               );
             })}

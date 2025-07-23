@@ -13,20 +13,24 @@ const categories = [
 const CategoriesSection = () => {
   return (
     <section
-      className="py-10 px-4 bg-cover bg-center"
+      className="py-16 relative overflow-hidden "
       style={{ backgroundImage: "url('/assets/Home/Fondo página 1.png')" }}
     >
-      <h2 className="text-3xl font-bold text-center mb-6 text-black">Categorías</h2>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">
+          Categorías
+        </h2>
 
-      <div className="mx-auto max-w-[800px] flex flex-wrap justify-center gap-x-6 gap-y-6">
-        {categories.map((cat, i) => (
-          <CategoryCard key={i} name={cat.name} icon={cat.icon} />
-        ))}
+        <div className="flex flex-wrap justify-center gap-6 mx-auto">
+          {categories.map((cat, i) => (
+            <div key={i} className="w-full xs:w-[220px] sm:w-[220px]">
+              <CategoryCard name={cat.name} icon={cat.icon} />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
 };
 
 export default CategoriesSection;
-
-
