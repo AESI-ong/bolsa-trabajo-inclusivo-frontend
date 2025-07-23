@@ -1,10 +1,10 @@
-import { Instagram, LinkedIn, YouTube, MusicNote } from "@mui/icons-material";
+import { Instagram, LinkedIn, MusicNote, YouTube } from "@mui/icons-material";
 
 const socials = {
   instagram: { icon: Instagram, url: "https://www.instagram.com/aesi.ong/" },
   linkedin: { icon: LinkedIn, url: "https://www.linkedin.com/company/aesiong/" },
   tiktok: { icon: MusicNote, url: "https://www.tiktok.com/@aesiong" },
-  youtube: { icon: YouTube, url: "https://youtube.com/@aesiong" },
+  youtube: { icon: YouTube, url: "https://www.youtube.com/@AESI-ONG" },
 };
 
 const Footer = () => {
@@ -50,7 +50,7 @@ const Footer = () => {
           <h2 className="font-semibold text-2xl mb-4">Contáctanos</h2>
           <div className="text-lg space-y-4">
             <p>soytalento@aesiong.org</p>
-            <p>(+51) 944 145 624</p>
+            <p>(+51) 967 972 857</p>
           </div>
         </div>
 
