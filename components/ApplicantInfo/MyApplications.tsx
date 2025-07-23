@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
+
+import type { Application } from '../../interfaces/Application';
 import ApplicationCard from '../applicationCard';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import api from '../../utils/axiosInstance';
-import type { Application } from '../../interfaces/Application';
 
 const itemsPerPage = 3;
 
@@ -105,7 +106,7 @@ const MyApplications: React.FC = () => {
             <ApplicationCard
               key={app.id}
               title={app.job_offer.title}
-              status={app.status}
+              status={app.status as 'submitted' | 'viewed' | 'accepted' | 'rejected'}
               date={new Date(app.application_date).toLocaleDateString()}
               location={app.job_offer.location || ''}
               candidates={undefined}

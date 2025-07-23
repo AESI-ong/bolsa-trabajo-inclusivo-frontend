@@ -1,11 +1,11 @@
 'use client';
 
-import React from 'react';
 import { Grid } from '@mui/material';
+import React from 'react';
 
 type JobCardProps = {
   title: string;
-  status: 'submitted' | 'in_review' | 'accepted' | 'rejected';
+  status: 'submitted' | 'in_review' | 'accepted' | 'rejected' | 'viewed';
   location: string;
   date?: string;
   candidates?: number;
@@ -13,6 +13,7 @@ type JobCardProps = {
 
 const statusTranslations: Record<JobCardProps['status'], string> = {
   submitted: 'Postulado',
+  viewed: 'Visto',
   in_review: 'CV visto',
   accepted: 'Aceptado',
   rejected: 'Rechazado',
