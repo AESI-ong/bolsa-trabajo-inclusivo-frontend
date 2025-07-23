@@ -13,18 +13,19 @@ const socials = {
 const Footer = () => {
   return (
     <footer className="bg-white text-black">
-      {/* Línea superior de 4 colores */}
-      <div className="w-full flex">
-        <div className="flex-1 h-2 bg-rojo-aesi" />
-        <div className="flex-1 h-2 bg-amarillo-aesi" />
-        <div className="flex-1 h-2 bg-azul-aesi" />
-        <div className="flex-1 h-2 bg-verde-aesi" />
-      </div>
+      {/* Línea superior degradada de 4 colores */}
+      <div
+        className="w-full h-2"
+        style={{
+          background:
+            "linear-gradient(90deg, #cd2027 0%, #f6d70e 33%, #2c6db6 66%, #55b948 100%)",
+        }}
+      />
 
       {/* Contenido responsive */}
       <div className="max-w-7xl mx-auto px-4 py-10 flex flex-col gap-10 md:gap-0 md:grid md:grid-cols-12 md:py-16">
         {/* Logo y derechos */}
-        <div className="flex flex-col items-center md:items-start md:col-span-3 mb-6 md:mb-0">
+        <div className="flex flex-col items-center md:items-start md:col-span-3 mb-2 md:mb-0">
           <div className="w-32 h-auto mb-2 md:mb-4">
             <img
               src="/aesi-logo.svg"
@@ -38,33 +39,58 @@ const Footer = () => {
           </p>
         </div>
 
-
         {/* Secciones */}
-        <nav className="md:col-span-2 flex flex-col items-center md:items-start mb-6 md:mb-0" aria-label="Secciones">
-          <h2 className="font-semibold text-xl md:text-2xl mb-3 md:mb-4">Secciones</h2>
+        <nav
+          className="md:col-span-2 flex flex-col items-center md:items-start mb-1 md:mb-0"
+          aria-label="Secciones"
+        >
+          <h2 className="font-semibold text-xl md:text-2xl mb-3 md:mb-4">
+            Secciones
+          </h2>
           <ul className="text-base md:text-lg space-y-2 md:space-y-4">
-            <li><a href="#" className="hover:underline">Inicio</a></li>
-            <li><a href="#" className="hover:underline">Nosotros</a></li>
-            <li><a href="#" className="hover:underline">Contáctanos</a></li>
+            <li>
+              <a href="#" className="hover:underline">
+                Inicio
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:underline">
+                Nosotros
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:underline">
+                Contáctanos
+              </a>
+            </li>
           </ul>
         </nav>
 
         {/* Contacto */}
-        <address className="not-italic md:col-span-3 flex flex-col items-center md:items-start mb-6 md:mb-0">
-          <h2 className="font-semibold text-xl md:text-2xl mb-3 md:mb-4">Contáctanos</h2>
+        <address className="not-italic md:col-span-3 flex flex-col items-center md:items-start mb-1 md:mb-0">
+          <h2 className="font-semibold text-xl md:text-2xl mb-3 md:mb-4">
+            Contáctanos
+          </h2>
           <ul className="text-base md:text-lg space-y-2 md:space-y-4">
             <li>
-              <a href="mailto:soytalento@aesiong.org" className="hover:underline">soytalento@aesiong.org</a>
+              <a
+                href="mailto:soytalento@aesiong.org"
+                className="hover:underline"
+              >
+                soytalento@aesiong.org
+              </a>
             </li>
             <li>
-              <a href="tel:+51967972857" className="hover:underline">(+51) 967 972 857</a>
+              <a href="tel:+51967972857" className="hover:underline">
+                (+51) 967 972 857
+              </a>
             </li>
           </ul>
         </address>
 
         {/* Noticias + Redes */}
         <div className="md:col-span-4 flex flex-col items-center md:items-start">
-          <h2 className="font-semibold text-xl md:text-2xl mb-2 md:mb-2 text-left w-full">
+          <h2 className="font-semibold text-xl md:text-2xl mb-8 md:mb-2 text-center md:text-start w-full">
             Recibe noticias de AESI
           </h2>
           <div className="flex mb-6 w-full justify-center md:justify-start">
@@ -73,7 +99,7 @@ const Footer = () => {
             </button>
           </div>
 
-          <h2 className="font-semibold text-xl md:text-2xl text-left mb-4 w-full">
+          <h2 className="font-semibold text-xl md:text-2xl text-center md:text-start mb-8 w-full">
             Síguenos
           </h2>
           <div className="flex space-x-6 md:space-x-8 justify-center md:justify-start w-full">

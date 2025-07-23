@@ -101,7 +101,7 @@ const JobCard = ({ job, isDetail = false }: Props) => {
         </div>
       </div>
       <button
-        className={`mt-4 md:mt-0 px-6 py-2 rounded-lg font-semibold shadow-sm transition whitespace-nowrap ${
+        className={`mt-4 md:mt-0 px-6 py-2 rounded-xl font-semibold shadow-sm transition whitespace-nowrap ${
           hasApplied
             ? "bg-gray-200 text-gray-500 cursor-not-allowed"
             : "bg-[#2C6DB6] text-white hover:bg-[#1E4B8C]"

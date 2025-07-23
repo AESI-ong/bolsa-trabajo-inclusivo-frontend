@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+
 import HeroSection from '../../../components/Home/HeroSection';
+import type { Job } from '../../../interfaces/Job';
 import JobCard from '../../../components/JobCard';
 import JobDescriptionSection from '../../../components/JobDescriptionSection';
 import api from '../../../utils/axiosInstance';
-import type { Job } from '../../../interfaces/Job';
+import { useParams } from 'next/navigation';
 
 export default function JobDetailPage() {
   const { token } = useParams();
@@ -34,7 +35,7 @@ export default function JobDetailPage() {
   return (
     <main>
       <HeroSection />
-      <section className="bg-white py-10 px-8 md:px-30">
+      <section className="bg-white py-10 px-8 md:px-30 max-w-7xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold mb-6">Trabajo inclusivo</h2>
         <JobCard job={job} isDetail />
         <JobDescriptionSection job={job} />

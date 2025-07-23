@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -46,11 +47,11 @@
 }
 
 :root {
-  --color-rojo-aesi: #CD2027;
-  --color-amarillo-aesi: #F6D70E;
-  --color-amarillo-claro-aesi: #FBF1B2;
-  --color-azul-aesi: #2C6DB6;
-  --color-azul-claro-aesi: #8AAFD9;
-  --color-verde-aesi: #55B948;
-  --color-azul-claro-aesi: #8AAFD9;
+  --color-rojo-aesi: #cd2027;
+  --color-amarillo-aesi: #f6d70e;
+  --color-amarillo-claro-aesi: #fbf1b2;
+  --color-azul-aesi: #2c6db6;
+  --color-azul-claro-aesi: #8aafd9;
+  --color-verde-aesi: #55b948;
+  --color-azul-claro-aesi: #8aafd9;
 }
