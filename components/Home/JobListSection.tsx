@@ -27,7 +27,7 @@ const JobListSection = ({ jobs }: JobListSectionProps) => {
             <JobCard key={job.token} job={job} />
           ))
         ) : (
-          <p className="text-center text-gray-500">No se encontraron trabajos.</p>
+          <p className="text-center text-gray-500 mb-9 md:text-2xl">No se encontraron trabajos.</p>
         )}
       </div>
 

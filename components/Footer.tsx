@@ -19,10 +19,10 @@ const Footer = () => {
       </div>
 
       {/* Contenido */}
-      <div className="mx-auto p-12 grid grid-cols-11 ">
+      <div className="max-w-screen-xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-11 gap-10">
         {/* Logo y derechos */}
-        <div className="mx-0 flex flex-col max-w-56 text-center col-span-3">
-          <div className="relative w-full aspect-[1.37] mb-2 md:mb-4">
+        <div className="col-span-1 md:col-span-4 lg:col-span-3 flex flex-col items-center md:items-start text-center md:text-left">
+          <div className="relative w-40 aspect-[1.37] mb-4">
             <img
               src="/aesi-logo.svg"
               alt="AESI logo"
@@ -30,15 +30,15 @@ const Footer = () => {
               loading="lazy"
             />
           </div>
-          <p className="text-[0.565rem] lg:text-base">
+          <p className="text-xs lg:text-base">
             © {new Date().getFullYear()} - Todos los derechos reservados AESI
           </p>
         </div>
 
         {/* Secciones */}
-        <div className="col-span-2 text-left w-full">
-          <h2 className="font-semibold text-2xl mb-4">Secciones</h2>
-          <div className="text-lg space-y-4">
+        <div className="col-span-1 md:col-span-4 lg:col-span-2">
+          <h2 className="font-semibold text-xl lg:text-2xl mb-4">Secciones</h2>
+          <div className="space-y-3 text-base">
             <p>Inicio</p>
             <p>Nosotros</p>
             <p>Contáctanos</p>
@@ -46,29 +46,27 @@ const Footer = () => {
         </div>
 
         {/* Contacto */}
-        <div className="col-span-3 text-left w-full">
-          <h2 className="font-semibold text-2xl mb-4">Contáctanos</h2>
-          <div className="text-lg space-y-4">
+        <div className="col-span-1 md:col-span-4 lg:col-span-3">
+          <h2 className="font-semibold text-xl lg:text-2xl mb-4">Contáctanos</h2>
+          <div className="space-y-3 text-base">
             <p>soytalento@aesiong.org</p>
             <p>(+51) 944 145 624</p>
           </div>
         </div>
 
-        {/* Noticias + Redes */}
-        <div className="col-span-3 pl-4">
-          <h2 className="font-semibold text-2xl mb-2 text-left">
+        {/* Noticias y Redes */}
+        <div className="col-span-1 md:col-span-4 lg:col-span-3">
+          <h2 className="font-semibold text-xl lg:text-2xl mb-2">
             Recibe noticias de AESI
           </h2>
-          <div className="flex mb-8">
-            <button className="cursor-pointer bg-red-600 text-white px-10 py-2 font-medium transition-colors shadow-lg rounded-xl">
+          <div className="mb-6">
+            <button className="bg-red-600 text-white px-6 py-2 text-sm sm:text-base rounded-xl shadow-md hover:bg-red-700 transition">
               Suscríbete
             </button>
           </div>
 
-          <h2 className="font-semibold text-2xl text-left mb-6">
-            Síguenos
-          </h2>
-          <div className="flex space-x-8 justify-start">
+          <h2 className="font-semibold text-xl lg:text-2xl mb-4">Síguenos</h2>
+          <div className="flex flex-wrap gap-4">
             {["linkedin", "instagram", "tiktok", "youtube"].map((social) => {
               const { url, icon } = socials[social as keyof typeof socials];
               const Icon = icon;
@@ -78,9 +76,9 @@ const Footer = () => {
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-14 h-14 bg-red-100 text-rojo-aesi rounded-full flex items-center justify-center hover:bg-red-200"
+                  className="w-12 h-12 sm:w-14 sm:h-14 bg-red-100 text-rojo-aesi rounded-full flex items-center justify-center hover:bg-red-200 transition"
                 >
-                  <Icon style={{ fontSize: "1.75rem" }} />
+                  <Icon style={{ fontSize: "1.5rem" }} />
                 </a>
               );
             })}

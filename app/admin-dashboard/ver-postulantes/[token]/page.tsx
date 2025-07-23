@@ -11,6 +11,8 @@ import {
   TableCell,
   TableBody,
   Button,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import api from '../../../../utils/axiosInstance';
@@ -68,6 +70,29 @@ export default function VerPostulantesPorOferta() {
     }
   };
 
+  const handleStatusChange = async (applicationId: number, newStatus: string) => {
+    try {
+      await api.patch(`/applications/${applicationId}`, { status: newStatus });
+      setApplications(prev =>
+        prev.map(app =>
+          app.id === applicationId ? { ...app, status: newStatus } : app
+        )
+      );
+      setSnackbar({
+        open: true,
+        message: 'Estado actualizado exitosamente.',
+        severity: 'success',
+      });
+    } catch (error) {
+      console.error('Error al actualizar el estado:', error);
+      setSnackbar({
+        open: true,
+        message: 'No se pudo actualizar el estado.',
+        severity: 'error',
+      });
+    }
+  };
+
   useEffect(() => {
     if (!userLoading && (!user || user.role !== 'admin')) {
       router.push('/login');
@@ -93,8 +118,7 @@ export default function VerPostulantesPorOferta() {
   if (userLoading || !user || user.role !== 'admin') return null;
 
   return (
-    <Box sx={{ padding: 4 , minHeight: '80vh'}}>
-      {/* 🔙 Botón Atrás */}
+    <Box sx={{ padding: 4, minHeight: '80vh' }}>
       <Button
         onClick={() => router.push('/admin-dashboard')}
         variant="outlined"
@@ -103,7 +127,7 @@ export default function VerPostulantesPorOferta() {
       >
         Atrás
       </Button>
-      
+
       <CustomSnackbar
         open={snackbar.open}
         onClose={handleSnackbarClose}
@@ -127,19 +151,34 @@ export default function VerPostulantesPorOferta() {
             <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Nombre</TableCell>
             <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Fecha de postulación</TableCell>
             <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>CV</TableCell>
+            <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Estado de Visualización</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {applications.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={3}>No hay postulantes para esta oferta.</TableCell>
+              <TableCell colSpan={4}>No hay postulantes para esta oferta.</TableCell>
             </TableRow>
           ) : (
             applications.map((app, index) => {
               const fullName = `${app.applicant.user.first_name} ${app.applicant.user.last_name}`;
-              const applicationDate = new Date(app.application_date).toLocaleDateString('es-PE');
+              const date = new Date(app.application_date);
+
+              // Corrige la diferencia horaria manualmente: -5 horas
+              date.setHours(date.getHours() - 5);
+
+              const applicationDate = new Intl.DateTimeFormat('es-PE', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+              }).format(date);
               const cvUrl = app.applicant.cv_url;
               const filename = cvUrl ? getFilenameFromUrl(cvUrl) : null;
+              const rawStatus = app.status;
+              console.log('rawStatus:', rawStatus);
+              const currentStatus = rawStatus === 'viewed' || rawStatus === 'not_viewed'
+                ? rawStatus
+                : 'not_viewed';
 
               return (
                 <TableRow key={index}>
@@ -158,6 +197,17 @@ export default function VerPostulantesPorOferta() {
                     ) : (
                       'Sin CV'
                     )}
+                  </TableCell>
+                  <TableCell>
+                    <Select
+                    value={currentStatus}
+                    onChange={(e) => handleStatusChange(app.id, e.target.value)}
+                    size="small"
+                    sx={{ minWidth: 120 }}
+                  >
+                    <MenuItem value="viewed">Visto</MenuItem>
+                    <MenuItem value="not_viewed">No visto</MenuItem>
+                  </Select>
                   </TableCell>
                 </TableRow>
               );

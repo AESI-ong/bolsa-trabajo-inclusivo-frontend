@@ -1,29 +1,19 @@
 'use client';
 
-import {
-  AppBar,
-  Box,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-  Toolbar,
-  Typography,
-} from '@mui/material';
-
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import CustomSnackbar from './CustomSnackbar'; // Asegúrate de que la ruta sea correcta
-import Link from 'next/link';
-import api from '../utils/axiosInstance';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Menu, MenuItem } from '@mui/material';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import IconButton from '@mui/material/IconButton';
+import CustomSnackbar from './CustomSnackbar';
 import { useUser } from '../interfaces/UserContext';
+import api from '../utils/axiosInstance';
 
 export default function NavBar() {
   const router = useRouter();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { user, loading, setUser } = useUser();
-
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -33,7 +23,6 @@ export default function NavBar() {
   const handleSnackbarClose = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
   };
-
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -47,7 +36,7 @@ export default function NavBar() {
     try {
       await api.post('/logout/');
       localStorage.removeItem('access_token');
-      localStorage.removeItem('user'); // Limpia también por si acaso
+      localStorage.removeItem('user');
       setUser(null);
       handleClose();
       setSnackbar({
@@ -55,65 +44,77 @@ export default function NavBar() {
         message: 'Sesión cerrada correctamente.',
         severity: 'success',
       });
-      // ezpera 
       await new Promise(resolve => setTimeout(resolve, 2000));
       router.push('/login');
-
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
     }
   };
 
   return (
-    <AppBar
-      position="static"
-      sx={{ backgroundColor: '#ffffff', boxShadow: 'none', padding: '10px 20px' }}
-    >
+    <nav className="bg-white shadow-sm px-4 sm:px-6 lg:px-10 py-3">
       <CustomSnackbar
         open={snackbar.open}
         message={snackbar.message}
         severity={snackbar.severity as 'success' | 'error' | 'warning' | 'info'}
         onClose={handleSnackbarClose}
       />
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
+      <div className="flex flex-wrap justify-between items-center gap-y-3">
+        {/* Logo */}
         <Link href="/" passHref>
-          <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-            <img src="/assets/Home/Aesi logo.png" alt="AESI" style={{ height: '40px', width: 'auto' }} />
-          </Box>
+          <div className="flex items-center cursor-pointer">
+            <img
+              src="/assets/Home/Aesi logo.png"
+              alt="AESI"
+              className="h-10 w-auto"
+            />
+          </div>
         </Link>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <img src="/assets/Home/iconos1.png" alt="Iconos izquierda" style={{ height: '50px', marginRight: '18px' }} />
-          <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#000' }}>
+        {/* Título central */}
+        <div className="flex items-center justify-center grow gap-2 text-center">
+          <img
+            src="/assets/Home/iconos1.png"
+            alt="Iconos izquierda"
+            className="hidden sm:block h-10"
+          />
+          <h1 className="text-base sm:text-lg md:text-2xl lg:text-4xl font-bold text-black">
             Bolsa de empleo inclusivo
-          </Typography>
-          <img src="/assets/Home/iconos2.png" alt="Iconos derecha" style={{ height: '50px', marginLeft: '18px' }} />
-        </Box>
+          </h1>
+          <img
+            src="/assets/Home/iconos2.png"
+            alt="Iconos derecha"
+            className="hidden sm:block h-10"
+          />
+        </div>
 
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        {/* Botón de login o usuario */}
+        <div className="flex items-center gap-2">
           {loading ? null : !user ? (
             <Link href="/login" passHref>
-              <Button sx={{ backgroundColor: '#c62828', color: '#fff' }}>
+              <button className="bg-red-700 text-white text-sm sm:text-base px-3 py-1 sm:px-4 sm:py-2 rounded">
                 Iniciar Sesión
-              </Button>
+              </button>
             </Link>
           ) : (
             <>
-              <IconButton onClick={handleMenu} sx={{ color: '#000' }}>
+              <IconButton onClick={handleMenu} className="text-black">
                 <AccountCircle />
-                <Typography sx={{ ml: 1 }}>
+                <span className="hidden sm:inline ml-1 text-sm sm:text-base">
                   {user.first_name} {user.last_name}
-                </Typography>
+                </span>
               </IconButton>
               <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-                {user.role === 'applicant' && [
-                  <MenuItem key="cv" onClick={handleClose}>
-                    <Link href="/dashboard">Mi CV</Link>
-                  </MenuItem>,
-                  <MenuItem key="postulaciones" onClick={handleClose}>
-                    <Link href="/dashboard">Mis Postulaciones</Link>
-                  </MenuItem>
-                ]}
+                {user.role === 'applicant' && (
+                  <>
+                    <MenuItem onClick={handleClose}>
+                      <Link href="/dashboard">Mi CV</Link>
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                      <Link href="/dashboard">Mis Postulaciones</Link>
+                    </MenuItem>
+                  </>
+                )}
                 {user.role === 'admin' && (
                   <MenuItem onClick={handleClose}>
                     <Link href="/admin-dashboard">Dashboard</Link>
@@ -123,8 +124,9 @@ export default function NavBar() {
               </Menu>
             </>
           )}
-        </Box>
-      </Toolbar>
-    </AppBar>
+        </div>
+      </div>
+    </nav>
   );
 }
+
