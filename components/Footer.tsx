@@ -90,14 +90,6 @@ const Footer = () => {
 
         {/* Noticias + Redes */}
         <div className="md:col-span-4 flex flex-col items-center md:items-start">
-          <h2 className="font-semibold text-xl md:text-2xl mb-8 md:mb-2 text-center md:text-start w-full">
-            Recibe noticias de AESI
-          </h2>
-          <div className="flex mb-6 w-full justify-center md:justify-start">
-            <button className="cursor-pointer bg-red-600 text-white px-8 py-2 font-medium transition-colors shadow-lg rounded-xl text-base md:text-lg">
-              Suscríbete
-            </button>
-          </div>
 
           <h2 className="font-semibold text-xl md:text-2xl text-center md:text-start mb-8 w-full">
             Síguenos
