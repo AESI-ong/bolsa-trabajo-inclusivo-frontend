@@ -5,13 +5,14 @@ type CategoryProps = {
 
 const CategoryCard = ({ name, icon }: CategoryProps) => {
   return (
-    <div className="bg-white p-4 rounded shadow text-center w-full max-w-[180px] py-6">
-      <img
-        src={`/assets/Home/${icon}`}
-        alt={name}
-        className="w-16 h-16 mx-auto mb-2"
-      />
-      <p className="text-xl font-bold text-sm">{name}</p>
+    <div className="bg-[#FCFAF4] rounded-xl shadow text-center w-full py-8 px-2 flex flex-col items-center">
+      <div
+        className="flex items-center justify-center w-20 h-20 rounded-full mb-4"
+        style={{ background: "rgba(44, 109, 182, 0.08)" }}
+      >
+        <img src={`/assets/Home/${icon}`} alt={name} className="w-10 h-10" />
+      </div>
+      <p className="text-lg font-bold text-gray-800 mt-1">{name}</p>
     </div>
   );
 };

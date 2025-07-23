@@ -46,7 +46,7 @@ function HomePage() {
   if (loading) return <p className="text-center py-10">Cargando...</p>;
 
   return (
-    <main>
+    <main className='min-h-screen bg-gray-50'>
       <HeroSection />
       <JobListSection jobs={jobs} />
       <CategoriesSection />
