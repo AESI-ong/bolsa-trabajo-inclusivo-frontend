@@ -8,6 +8,9 @@ import { UserProvider } from '../interfaces/UserContext';
 export const metadata: Metadata = {
   title: 'Bolsa de empleo inclusivo',
   description: 'Tu plataforma de empleo accesible',
+  icons: {
+    icon: '/assets/icons/logoAESI.ico', // o .png si es otro formato
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
