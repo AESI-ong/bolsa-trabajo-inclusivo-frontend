@@ -40,7 +40,7 @@ const ApplicationCard: React.FC<JobCardProps> = ({
           <div className="flex items-center flex-wrap mt-1 text-gray-600 text-sm gap-4">
             <span className="flex items-center gap-1">
               <img
-                src="/assets/ApplicantInfo/pin.svg"
+                src="/assets/applicantInfo/pin.svg"
                 width={20}
                 height={20}
                 className="mr-1"
