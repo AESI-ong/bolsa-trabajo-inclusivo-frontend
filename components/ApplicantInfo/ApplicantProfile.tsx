@@ -227,7 +227,7 @@ const ApplicantInfo: React.FC = () => {
       <div className="bg-white border-2 border-[#2C6CB6] rounded-lg shadow-md w-full p-4 sm:p-6 flex flex-col gap-4">
         <div className="flex flex-col sm:flex-row items-center gap-2 mb-2">
           <img
-            src={"/assets/ApplicantInfo/user_blue.svg"}
+            src={"/assets/applicantInfo/user_blue.svg"}
             alt="usuario"
             className="w-20 h-20"
           />
@@ -258,7 +258,7 @@ const ApplicantInfo: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">
           <div className="text-gray-700 flex items-center w-full sm:w-auto">
             <img
-              src={"/assets/ApplicantInfo/mail.svg"}
+              src={"/assets/applicantInfo/mail.svg"}
               width={20}
               height={20}
               className="mr-2"
@@ -278,7 +278,7 @@ const ApplicantInfo: React.FC = () => {
           </div>
           <p className="text-gray-700 flex items-center w-full sm:w-auto">
             <img
-              src={"/assets/ApplicantInfo/phone.svg"}
+              src={"/assets/applicantInfo/phone.svg"}
               width={20}
               height={20}
               className="mr-2"
