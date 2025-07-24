@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import CustomSnackbar from "../../components/CustomSnackbar";
 import api from "../../utils/axiosInstance";
@@ -9,6 +9,8 @@ import { useUser } from "../../interfaces/UserContext";
 const ApplicantInfo: React.FC = () => {
   const { user, setUser } = useUser();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [dragActive, setDragActive] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     first_name: user?.first_name || "",
@@ -114,6 +116,7 @@ const ApplicantInfo: React.FC = () => {
     }
   };
 
+  const MAX_SIZE_MB = 5;
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
@@ -126,8 +129,60 @@ const ApplicantInfo: React.FC = () => {
         setSelectedFile(null);
         return;
       }
+      if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+        setSnackbar({
+          open: true,
+          message: `El archivo supera el máximo permitido de ${MAX_SIZE_MB}MB.`,
+          severity: "warning",
+        });
+        setSelectedFile(null);
+        return;
+      }
       setSelectedFile(file);
     }
+  };
+
+  // Drag & Drop handlers
+  const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      if (file.type !== "application/pdf") {
+        setSnackbar({
+          open: true,
+          message: "Solo se aceptan archivos PDF.",
+          severity: "warning",
+        });
+        setSelectedFile(null);
+        return;
+      }
+      if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+        setSnackbar({
+          open: true,
+          message: `El archivo supera el máximo permitido de ${MAX_SIZE_MB}MB.`,
+          severity: "warning",
+        });
+        setSelectedFile(null);
+        return;
+      }
+      setSelectedFile(file);
+    }
+  };
+
+  const handleClickUpload = () => {
+    inputRef.current?.click();
   };
 
   const handleUpload = async () => {
@@ -369,20 +424,32 @@ const ApplicantInfo: React.FC = () => {
           </div>
         )}
 
-        <div className="mb-4 flex flex-col items-center">
-          <label
-            htmlFor="cvUpload"
-            className="bg-gray-200 px-4 py-2 rounded cursor-pointer hover:bg-gray-300 w-full sm:w-auto text-center"
-          >
-            {selectedFile ? selectedFile.name : "Seleccionar archivo PDF"}
-          </label>
+        {/* Drop & Upload area for CV */}
+        <div
+          className={`w-full max-w-md mx-auto my-6 p-6 border-2 rounded-xl flex flex-col items-center justify-center transition-colors duration-200 cursor-pointer ${dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-white"}`}
+          onClick={handleClickUpload}
+          onDragEnter={handleDrag}
+          onDragOver={handleDrag}
+          onDragLeave={handleDrag}
+          onDrop={handleDrop}
+          style={{ minHeight: 120 }}
+        >
           <input
-            id="cvUpload"
+            ref={inputRef}
             type="file"
-            accept=".pdf"
-            onChange={handleFileChange}
+            accept="application/pdf"
             className="hidden"
+            onChange={handleFileChange}
           />
+          <div className="flex flex-col items-center">
+            <span className="text-lg font-semibold mb-2 text-[#2164B0]">Sube tu CV (PDF, máx. 5MB)</span>
+            <span className="text-sm text-gray-500 mb-2">Arrastra y suelta aquí o haz clic para seleccionar</span>
+            {selectedFile ? (
+              <span className="text-green-700 font-medium mt-2">{selectedFile.name} ({(selectedFile.size/1024/1024).toFixed(2)} MB)</span>
+            ) : (
+              <span className="text-gray-400 mt-2">Ningún archivo seleccionado</span>
+            )}
+          </div>
         </div>
 
         <div className="flex justify-center">
