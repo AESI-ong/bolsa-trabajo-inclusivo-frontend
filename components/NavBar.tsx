@@ -4,7 +4,6 @@ import { Menu, MenuItem } from "@mui/material";
 
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import CustomSnackbar from "./CustomSnackbar";
-import IconButton from "@mui/material/IconButton";
 import Link from "next/link";
 import api from "../utils/axiosInstance";
 import { useRouter } from "next/navigation";
@@ -99,27 +98,42 @@ export default function NavBar() {
             </Link>
           ) : (
             <>
-              <IconButton onClick={handleMenu} className="text-black">
-                <AccountCircle />
-                <span className="hidden sm:inline ml-1 text-sm sm:text-base">
+              <button
+                onClick={handleMenu}
+                // Quiero algo mas outlined
+                className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#F6D70E] text-[#2164B0] font-semibold shadow-sm hover:bg-[#ffe066] focus:outline-none focus:ring-2 focus:ring-[#2164B0] transition-colors duration-200"
+                style={{ minWidth: 0 }}
+              >
+                <AccountCircle style={{ fontSize: 28 }} />
+                <span className="hidden sm:inline text-sm sm:text-base">
                   {user.first_name} {user.last_name}
                 </span>
-              </IconButton>
+              </button>
               <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                {user.role === "applicant" && (
-                  <>
-                    <MenuItem onClick={handleClose}>
-                      <Link href="/dashboard">Mi CV</Link>
-                    </MenuItem>
-                    <MenuItem onClick={handleClose}>
-                      <Link href="/dashboard">Mis Postulaciones</Link>
-                    </MenuItem>
-                  </>
-                )}
+                {user.role === "applicant" && [
+                  <MenuItem
+                    onClick={() => {
+                      handleClose();
+                      router.push("/dashboard?tab=cv");
+                    }}
+                    key="cv"
+                  >
+                    Mi CV
+                  </MenuItem>,
+                  <MenuItem
+                    onClick={() => {
+                      handleClose();
+                      router.push("/dashboard?tab=postulaciones");
+                    }}
+                    key="postulaciones"
+                  >
+                    Mis Postulaciones
+                  </MenuItem>,
+                ]}
                 {user.role === "admin" && (
                   <MenuItem onClick={handleClose}>
                     <Link href="/admin-dashboard">Dashboard</Link>

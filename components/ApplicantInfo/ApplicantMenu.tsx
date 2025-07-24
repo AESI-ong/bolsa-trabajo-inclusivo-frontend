@@ -7,7 +7,7 @@ type ApplicantMenuProps = {
 
 const ApplicantMenu = ({ onSelect }: ApplicantMenuProps) => {
     return (
-       <Stack className="px-30 py-8 pl-8" direction="row" spacing={2} justifyContent="start" >
+       <Stack className="px-30 py-8 pl-8 max-w-7xl mx-auto" direction="row" spacing={2} justifyContent="start" >
           <Button
                 onClick={() => onSelect('cv')}
                 sx={{

@@ -1,4 +1,6 @@
 "use client";
+import categories from "../../../assets/data/categories.json";
+import locations from "../../../assets/data/locations.json";
 
 import {
   Box,
@@ -177,47 +179,11 @@ function NewJobForm() {
               <MenuItem value="" disabled>
                 Seleccionar ubicación
               </MenuItem>
-              <MenuItem value="Ancón">Ancón</MenuItem>
-              <MenuItem value="Ate">Ate</MenuItem>
-              <MenuItem value="Barranco">Barranco</MenuItem>
-              <MenuItem value="Breña">Breña</MenuItem>
-              <MenuItem value="Carabayllo">Carabayllo</MenuItem>
-              <MenuItem value="Chorrillos">Chorrillos</MenuItem>
-              <MenuItem value="Comas">Comas</MenuItem>
-              <MenuItem value="El Agustino">El Agustino</MenuItem>
-              <MenuItem value="Independencia">Independencia</MenuItem>
-              <MenuItem value="Jesús María">Jesús María</MenuItem>
-              <MenuItem value="La Molina">La Molina</MenuItem>
-              <MenuItem value="La Victoria">La Victoria</MenuItem>
-              <MenuItem value="Lince">Lince</MenuItem>
-              <MenuItem value="Los Olivos">Los Olivos</MenuItem>
-              <MenuItem value="Lurigancho">Lurigancho</MenuItem>
-              <MenuItem value="Lurín">Lurín</MenuItem>
-              <MenuItem value="Magdalena del Mar">Magdalena del Mar</MenuItem>
-              <MenuItem value="Miraflores">Miraflores</MenuItem>
-              <MenuItem value="Pueblo Libre">Pueblo Libre</MenuItem>
-              <MenuItem value="Puente Piedra">Puente Piedra</MenuItem>
-              <MenuItem value="Rímac">Rímac</MenuItem>
-              <MenuItem value="San Borja">San Borja</MenuItem>
-              <MenuItem value="San Isidro">San Isidro</MenuItem>
-              <MenuItem value="San Juan de Lurigancho">
-                San Juan de Lurigancho
-              </MenuItem>
-              <MenuItem value="San Juan de Miraflores">
-                San Juan de Miraflores
-              </MenuItem>
-              <MenuItem value="San Luis">San Luis</MenuItem>
-              <MenuItem value="San Martín de Porres">
-                San Martín de Porres
-              </MenuItem>
-              <MenuItem value="San Miguel">San Miguel</MenuItem>
-              <MenuItem value="Santiago de Surco">Santiago de Surco</MenuItem>
-              <MenuItem value="Surquillo">Surquillo</MenuItem>
-              <MenuItem value="Villa El Salvador">Villa El Salvador</MenuItem>
-              <MenuItem value="Villa María del Triunfo">
-                Villa María del Triunfo
-              </MenuItem>
-              <MenuItem value="Callao">Callao</MenuItem>
+              {locations.map((loc: string) => (
+                <MenuItem key={loc} value={loc}>
+                  {loc}
+                </MenuItem>
+              ))}
             </Select>
           </Box>
 
@@ -265,18 +231,11 @@ function NewJobForm() {
               <MenuItem value="" disabled>
                 Seleccionar categoría
               </MenuItem>
-              <MenuItem value="Agricultura">Agricultura</MenuItem>
-              <MenuItem value="Comercio">Comercio</MenuItem>
-              <MenuItem value="Construcción">Construcción</MenuItem>
-              <MenuItem value="Hotelería y Turismo">
-                Hotelería y Turismo
-              </MenuItem>
-              <MenuItem value="Educación">Educación</MenuItem>
-              <MenuItem value="Servicios financieros">
-                Servicios financieros
-              </MenuItem>
-              <MenuItem value="Transporte">Transporte</MenuItem>
-              <MenuItem value="Ventas">Ventas</MenuItem>
+              {categories.map((cat: string) => (
+                <MenuItem key={cat} value={cat}>
+                  {cat}
+                </MenuItem>
+              ))}
             </Select>
           </Box>
 

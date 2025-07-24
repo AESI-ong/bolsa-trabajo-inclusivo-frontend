@@ -2,8 +2,8 @@
 
 import { Briefcase, ChartBarStacked, MapPinned } from "lucide-react";
 
-import categories from "./categories.json";
-import locations from "./locations.json";
+import categories from "../../assets/data/categories.json";
+import locations from "../../assets/data/locations.json";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
