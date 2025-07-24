@@ -3,7 +3,7 @@
 import { Briefcase, ChartBarStacked, MapPinned } from "lucide-react";
 
 import categories from "../../assets/data/categories.json";
-import locations from "../../assets/data/locations.json";
+import locationsData from "../../assets/data/locations.json";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -62,9 +62,17 @@ const HeroSection = () => {
             className="py-3 px-3 pr-8 text-black bg-transparent w-full focus:outline-none rounded-xl text-base appearance-none"
           >
             <option value="">Seleccionar ubicación</option>
-            {locations.map((loc) => (
-              <option key={loc} value={loc}>
-                {loc}
+            <optgroup label="Lima (distritos)">
+              {locationsData.lima.map((dist: string) => (
+                <option key={dist} value={dist}>
+                  {dist}
+                </option>
+              ))}
+            </optgroup>
+            <option disabled>──────────</option>
+            {locationsData.regiones.map((region: string) => (
+              <option key={region} value={region}>
+                {region}
               </option>
             ))}
           </select>

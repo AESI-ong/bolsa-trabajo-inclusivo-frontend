@@ -1,11 +1,10 @@
 "use client";
-import categories from "../../../assets/data/categories.json";
-import locations from "../../../assets/data/locations.json";
 
 import {
   Box,
   Button,
   IconButton,
+  ListSubheader,
   MenuItem,
   Select,
   TextField,
@@ -17,6 +16,8 @@ import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CustomSnackbar from "../../../components/CustomSnackbar";
 import api from "../../../utils/axiosInstance";
+import categories from "../../../assets/data/categories.json";
+import locationsData from "../../../assets/data/locations.json";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../../interfaces/UserContext";
 import { withRoleProtection } from "../../../utils/withRoleProtection";
@@ -175,13 +176,21 @@ function NewJobForm() {
               onChange={(e) => handleChange("location", e.target.value)}
               sx={{ backgroundColor: "#fff", mt: 0.5 }}
               displayEmpty
+              renderValue={(selected) => selected || "Seleccionar ubicación"}
             >
               <MenuItem value="" disabled>
                 Seleccionar ubicación
               </MenuItem>
-              {locations.map((loc: string) => (
-                <MenuItem key={loc} value={loc}>
-                  {loc}
+              <ListSubheader>Lima (distritos)</ListSubheader>
+              {locationsData.lima.map((dist: string) => (
+                <MenuItem key={dist} value={dist}>
+                  {dist}
+                </MenuItem>
+              ))}
+              <ListSubheader>──────────</ListSubheader>
+              {locationsData.regiones.map((region: string) => (
+                <MenuItem key={region} value={region}>
+                  {region}
                 </MenuItem>
               ))}
             </Select>
