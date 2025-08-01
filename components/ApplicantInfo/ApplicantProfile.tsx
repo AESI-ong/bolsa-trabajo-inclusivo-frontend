@@ -5,22 +5,21 @@ import React, { useRef, useState } from "react";
 import CustomSnackbar from "../../components/CustomSnackbar";
 import api from "../../utils/axiosInstance";
 import { useUser } from "../../interfaces/UserContext";
+import { useRouter } from "next/navigation";
 
 const ApplicantInfo: React.FC = () => {
+  const router = useRouter();
   const { user, setUser } = useUser();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    first_name: user?.first_name || "",
-    last_name: user?.last_name || "",
-    email: user?.email || "",
-    phone_number: user?.applicant_profile?.phone_number || "",
-    current_password: "",
-    new_password: "",
-    confirm_password: "",
+  first_name: user?.first_name || "",
+  last_name: user?.last_name || "",
+  phone_number: user?.applicant_profile?.phone_number || "",
   });
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -45,11 +44,7 @@ const ApplicantInfo: React.FC = () => {
     setFormData({
       first_name: user.first_name || "",
       last_name: user.last_name || "",
-      phone_number: user.applicant_profile?.phone_number || "",
-      current_password: "",
-      new_password: "",
-      confirm_password: "",
-      email: user.email || "",
+      phone_number: user.applicant_profile?.phone_number || ""
     });
   };
 
@@ -58,34 +53,18 @@ const ApplicantInfo: React.FC = () => {
       const payload: {
         first_name: string;
         last_name: string;
-        email: string;
         phone_number: string;
-        current_password?: string;
-        new_password?: string;
-        confirm_password?: string;
       } = {
         first_name: formData.first_name,
         last_name: formData.last_name,
-        email: formData.email,
         phone_number: formData.phone_number,
       };
-
-      if (
-        formData.current_password &&
-        formData.new_password &&
-        formData.confirm_password
-      ) {
-        payload.current_password = formData.current_password;
-        payload.new_password = formData.new_password;
-        payload.confirm_password = formData.confirm_password;
-      }
 
       await api.patch("/applicants/me/", payload);
 
       const applicantRes = await api.get("/applicants/me/");
       setUser({
         ...user,
-        email: formData.email, // <-- Actualiza el correo en el contexto
         first_name: formData.first_name,
         last_name: formData.last_name,
         applicant_profile: applicantRes.data,
@@ -294,7 +273,7 @@ const ApplicantInfo: React.FC = () => {
                   name="first_name"
                   value={formData.first_name}
                   onChange={handleInputChange}
-                  className="border-2 border-gray-300 rounded px-2 py-1 mb-2 sm:mb-0"
+                  className="border-2 border-gray-300 rounded px-2 py-1 mb-2 sm:mb-2 ml-2"
                 />
                 <input
                   type="text"
@@ -312,33 +291,43 @@ const ApplicantInfo: React.FC = () => {
 
         <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">
           <div className="text-gray-700 flex items-center w-full sm:w-auto">
-            <img
+            {isEditing ? (
+              <img
+              />
+            ) : (
+              <img
               src={"/assets/applicantInfo/mail.svg"}
               width={20}
               height={20}
               className="mr-2"
               alt="Email Icon"
-            />
+              />
+            )}
             {isEditing ? (
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="border-2 border-gray-300 rounded px-2 py-1 w-full"
+              <div
               />
             ) : (
               user?.email
             )}
           </div>
           <p className="text-gray-700 flex items-center w-full sm:w-auto">
-            <img
-              src={"/assets/applicantInfo/phone.svg"}
-              width={20}
-              height={20}
-              className="mr-2"
-              alt="telefono"
-            />
+            {isEditing?(
+              <img
+                src={"/assets/applicantInfo/phone.svg"}
+                width={20}
+                height={20}
+                className="mr-2"
+                alt="Phone Icon"
+              />
+            ) : (
+              <img
+                src={"/assets/applicantInfo/phone.svg"}
+                width={20}
+                height={20}
+                className="ml-10 mr-2"
+                alt="Phone Icon"
+              />
+            )}
             {isEditing ? (
               <input
                 type="text"
@@ -377,38 +366,16 @@ const ApplicantInfo: React.FC = () => {
             )}
           </div>
         </div>
-
-        {isEditing && (
-          <div className="mb-4">
-            <label className="block font-semibold">Contraseña actual</label>
-            <input
-              type="password"
-              name="current_password"
-              value={formData.current_password}
-              onChange={handleInputChange}
-              className="border-2 border-gray-300 w-full px-2 py-1 rounded mt-1"
-            />
-            <label className="block font-semibold mt-2">Nueva contraseña</label>
-            <input
-              type="password"
-              name="new_password"
-              value={formData.new_password}
-              onChange={handleInputChange}
-              className="border-2 border-gray-300 w-full px-2 py-1 rounded mt-1"
-            />
-            <label className="block font-semibold mt-2">
-              Confirmar nueva contraseña
-            </label>
-            <input
-              type="password"
-              name="confirm_password"
-              value={formData.confirm_password}
-              onChange={handleInputChange}
-              className="border-2 border-gray-300 w-full px-2 py-1 rounded mt-1"
-            />
-          </div>
-        )}
-
+        <div className="text-center">
+          <p className="text-sm text-gray-600 mb-1">¿Deseas cambiar tu correo o contraseña?</p>
+          <button
+            onClick={() => router.replace("/dashboard/account-settings")}
+            className="text-sm text-blue-600 underline hover:text-blue-800 transition"
+          >
+            Ir a configuración de cuenta
+          </button>
+        </div>
+        
         <div className="border-b-2 border-[#2C6CB6] mb-4"></div>
 
         <h2 className="text-2xl font-bold mb-4">No olvides tu CV</h2>
