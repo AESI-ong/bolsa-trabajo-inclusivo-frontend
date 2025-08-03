@@ -7,6 +7,20 @@ import CustomSnackbar from "../../../components/CustomSnackbar";
 import { useUser } from "../../../interfaces/UserContext";
 import {withRoleProtection} from "../../../utils/withRoleProtection";
 
+interface AxiosError {
+  response?: {
+    status?: number;
+    data?: { message?: string };
+  };
+}
+
+interface PayloadData {
+  email: string;
+  current_password?: string;
+  new_password?: string;
+  confirm_password?: string;
+}
+
 const AccountSettings: React.FC = () => {
   const router = useRouter();
   const { user } = useUser();
@@ -41,7 +55,7 @@ const AccountSettings: React.FC = () => {
   const handleSubmit = async () => {
     const { email, current_password, new_password, confirm_password } = formData;
 
-    const payload: any = { email };
+    const payload: PayloadData = { email };
 
     const anyPasswordFieldFilled = current_password || new_password || confirm_password;
 
@@ -76,12 +90,41 @@ const AccountSettings: React.FC = () => {
         localStorage.removeItem("refresh_token");
         router.push("/login");
       }, 2000);
-    } catch (err: any) {
-      setSnackbar({
-        open: true,
-        message: err.response?.data?.detail || "Error al actualizar los datos.",
-        severity: "error",
-      });
+    } catch (error: unknown) {
+      console.error("Error al actualizar datos", error);
+      const err = error as AxiosError;
+      if (err.response){
+        if (err.response.status === 400) {
+          setSnackbar({
+            open: true,
+            message: "Error en los datos proporcionados.",
+            severity: "error",
+          });
+        }
+        else if (err.response.status === 401) {
+          setSnackbar({
+            open: true,
+            message: "No autorizado. Por favor, inicia sesión nuevamente.",
+            severity: "error",
+          });
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("refresh_token");
+          router.push("/login");
+        } else if (err.response.data?.message) {
+          setSnackbar({
+            open: true,
+            message: err.response.data?.message,
+            severity: "error",
+          });
+        }
+      }
+      else {
+        setSnackbar({
+          open: true,
+          message: "Error al actualizar los datos. Por favor, inténtalo de nuevo.",
+          severity: "error",
+        });
+      }
     }
   };
 
@@ -90,7 +133,9 @@ const AccountSettings: React.FC = () => {
       <CustomSnackbar
         open={snackbar.open}
         message={snackbar.message}
-        severity={snackbar.severity as any}
+        severity={
+            snackbar.severity as "success" | "error" | "warning" | "info"
+          }
         onClose={handleSnackbarClose}
       />
 
